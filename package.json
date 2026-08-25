@@ -1,0 +1,25 @@
+{
+  "name": "bfsg-scanner",
+  "version": "0.0.0",
+  "description": "WCAG 2.1 AA / BFSG compliance scanner built on Playwright and axe-core",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run typecheck && npm run lint && npm run test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.10",
+    "@types/node": "24.9.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

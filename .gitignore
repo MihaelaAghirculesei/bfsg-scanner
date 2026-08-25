@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+*.log
+
+# local environment / secrets
+.env
+.env.*
+
+# scan output (never committed — may contain third-party site data)
+/reports/
+*.bfsg-report.*
+
+# private working files (site lists, client data — see docs/SCANNING-ETHICS.md)
+/private/
+sites.private.*

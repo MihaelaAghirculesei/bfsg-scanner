@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Enforces Conventional Commits, a length cap, and a blocklist of
+# disallowed words (AI attribution has no place in this repo's history).
+set -euo pipefail
+
+msg_file="$1"
+subject="$(head -n1 "$msg_file")"
+
+pattern='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([a-z0-9-]+\))?: [a-z].*[^.]$'
+
+if ! [[ "$subject" =~ $pattern ]]; then
+  echo "commit-msg: subject line must match Conventional Commits format" >&2
+  echo "  <type>(<scope>): <lowercase summary, no trailing period>" >&2
+  echo "  got: $subject" >&2
+  exit 1
+fi
+
+if [ "${#subject}" -gt 72 ]; then
+  echo "commit-msg: subject line exceeds 72 characters (${#subject})" >&2
+  exit 1
+fi
+
+blocklist=(claude anthropic chatgpt gpt copilot 'ai-generated' 'co-authored-by' 'generated with' 'assistant')
+lower_msg="$(tr '[:upper:]' '[:lower:]' < "$msg_file")"
+for word in "${blocklist[@]}"; do
+  if [[ "$lower_msg" == *"$word"* ]]; then
+    echo "commit-msg: message contains disallowed term '$word'" >&2
+    exit 1
+  fi
+done

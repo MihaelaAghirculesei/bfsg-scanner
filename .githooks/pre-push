@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Runs the full verification suite before anything leaves the machine.
+set -euo pipefail
+
+echo "pre-push: running npm run verify..."
+npm run verify
