@@ -9,6 +9,8 @@
   },
   "scripts": {
     "prepare": "git config core.hooksPath .githooks",
+    "build": "tsc",
+    "cli": "tsx src/cli/index.ts",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -16,9 +18,14 @@
     "test:watch": "vitest",
     "verify": "npm run typecheck && npm run lint && npm run test"
   },
+  "dependencies": {
+    "yaml": "2.9.0",
+    "zod": "4.4.3"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.5.10",
     "@types/node": "24.9.2",
+    "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "4.1.11"
   }
