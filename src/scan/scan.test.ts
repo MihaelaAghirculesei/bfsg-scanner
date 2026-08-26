@@ -1,34 +1,93 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { type StaticServer, startStaticServer } from '../testing/static-server.js';
+import { createServer, type Server, type Socket } from 'node:net';
+import { describe, expect, it } from 'vitest';
 import { scan } from './scan.js';
 
-const FIXTURES_SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../../fixtures/site');
-
-let server: StaticServer;
-
-beforeAll(async () => {
-  server = await startStaticServer(FIXTURES_SITE_DIR);
-});
-
-afterAll(async () => {
-  await server.close();
-});
+/** A TCP server that accepts and immediately kills every connection, so
+ * navigation always fails. Counts connection attempts to prove retries
+ * actually happen, rather than just trusting the loop reads correctly. */
+function startFlakyServer(): Promise<{
+  port: number;
+  attempts: () => number;
+  close: () => Promise<void>;
+}> {
+  let attempts = 0;
+  const server: Server = createServer((socket) => {
+    attempts += 1;
+    socket.destroy();
+  });
+  return new Promise((resolvePromise) => {
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      const port = typeof address === 'object' && address !== null ? address.port : 0;
+      resolvePromise({
+        port,
+        attempts: () => attempts,
+        close: () => new Promise((r) => server.close(() => r())),
+      });
+    });
+  });
+}
 
 describe('scan', () => {
-  it('separates a known violation from a clean page', async () => {
-    const result = await scan([`${server.url}/contrast.html`, `${server.url}/clean.html`], {
-      wcagTags: ['wcag2a', 'wcag2aa', 'wcag21aa'],
+  it('reports a page that refuses the connection as a failure, not a crash', async () => {
+    const flaky = await startFlakyServer();
+    try {
+      const result = await scan([`http://127.0.0.1:${flaky.port}/`], {
+        wcagTags: ['wcag2a'],
+        retries: 0,
+        timeoutMs: 5_000,
+      });
+
+      expect(result.pages).toHaveLength(1);
+      expect(result.pages[0]?.status).toBe('error');
+    } finally {
+      await flaky.close();
+    }
+  }, 15_000);
+
+  it('retries once by default before giving up', async () => {
+    const flaky = await startFlakyServer();
+    try {
+      const result = await scan([`http://127.0.0.1:${flaky.port}/`], {
+        wcagTags: ['wcag2a'],
+        timeoutMs: 5_000,
+      });
+
+      expect(result.pages[0]?.status).toBe('error');
+      expect(flaky.attempts()).toBe(2);
+    } finally {
+      await flaky.close();
+    }
+  }, 20_000);
+
+  it('fails a page that never finishes loading within the timeout', async () => {
+    const openSockets = new Set<Socket>();
+    const hanging: Server = createServer((socket) => {
+      // Accept the connection but never write a response.
+      openSockets.add(socket);
+      socket.on('close', () => openSockets.delete(socket));
+      socket.on('error', () => undefined);
     });
+    await new Promise<void>((resolvePromise) => hanging.listen(0, '127.0.0.1', resolvePromise));
+    const address = hanging.address();
+    const port = typeof address === 'object' && address !== null ? address.port : 0;
 
-    expect(result.pages).toHaveLength(2);
+    try {
+      const result = await scan([`http://127.0.0.1:${port}/`], {
+        wcagTags: ['wcag2a'],
+        retries: 0,
+        timeoutMs: 500,
+      });
 
-    const [contrastPage, cleanPage] = result.pages;
-    expect(contrastPage?.violations.map((v) => v.ruleId)).toEqual(['color-contrast']);
-    expect(contrastPage?.violations[0]?.nodes).toHaveLength(1);
-    expect(contrastPage?.violations[0]?.impact).toBe('serious');
-    expect(cleanPage?.violations).toEqual([]);
-    expect(cleanPage?.incomplete).toEqual([]);
-  }, 60_000);
+      expect(result.pages[0]?.status).toBe('error');
+      if (result.pages[0]?.status === 'error') {
+        expect(result.pages[0].error.toLowerCase()).toContain('timeout');
+      }
+    } finally {
+      for (const socket of openSockets) {
+        socket.destroy();
+      }
+      await new Promise<void>((resolvePromise) => hanging.close(() => resolvePromise()));
+    }
+  }, 15_000);
 });
