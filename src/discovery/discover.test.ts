@@ -78,6 +78,29 @@ describe('discoverFromSitemap', () => {
     expect(pages).toEqual([`${server.url}/page-1`]);
   });
 
+  it('drops excludePaths matches and non-page assets', async () => {
+    server = await startStaticServer(dir);
+    const origin = server.url;
+    writeFileSync(
+      join(dir, 'sitemap.xml'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${origin}/keep</loc></url>
+  <url><loc>${origin}/admin/users</loc></url>
+  <url><loc>${origin}/report.pdf</loc></url>
+</urlset>`,
+      'utf8',
+    );
+
+    const pages = await discoverFromSitemap({
+      baseUrl: origin,
+      maxPages: 50,
+      excludePaths: ['/admin'],
+    });
+
+    expect(pages).toEqual([`${origin}/keep`]);
+  });
+
   it('throws when the root sitemap cannot be loaded', async () => {
     server = await startStaticServer(dir); // empty dir: no sitemap.xml present
 

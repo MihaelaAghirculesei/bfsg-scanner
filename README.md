@@ -6,7 +6,7 @@ Status: early development. Not yet usable.
 
 ## Scope
 
-This project is under active construction. See `docs/adr/` (coming soon) for the architectural decisions behind it.
+This project is under active construction. See `docs/adr/` for the architectural decisions behind it.
 
 ## License
 

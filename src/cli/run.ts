@@ -1,4 +1,5 @@
 import { type Config, ConfigError, loadConfig } from '../config/index.js';
+import { discoverSite } from '../discovery/index.js';
 import { scan } from '../scan/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
@@ -7,7 +8,8 @@ const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
  * Exit code contract:
  *   0 - scan completed
  *   2 - invalid or missing configuration
- *   3 - one or more pages could not be scanned (navigation/browser failure)
+ *   3 - no pages were discovered, or one or more pages could not be scanned
+ *       (navigation/browser failure)
  *
  * A threshold-based exit code (violations at or above `failOn`) lands with
  * scoring in a later change; every successful scan currently exits 0
@@ -47,7 +49,18 @@ export async function run(argv: readonly string[]): Promise<number> {
     throw error;
   }
 
-  const result = await scan([config.baseUrl], { wcagTags: config.wcagTags });
+  const urls = await discoverSite({
+    baseUrl: config.baseUrl,
+    maxPages: config.maxPages,
+    excludePaths: config.excludePaths,
+  });
+  if (urls.length === 0) {
+    console.error(`No scannable pages discovered for ${config.baseUrl}`);
+    return 3;
+  }
+  console.log(`Discovered ${urls.length} page(s) to scan.`);
+
+  const result = await scan(urls, { wcagTags: config.wcagTags });
   const failedPages = result.pages.filter((page) => page.status === 'error');
   if (failedPages.length > 0) {
     for (const page of failedPages) {

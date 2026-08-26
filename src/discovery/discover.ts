@@ -1,4 +1,5 @@
 import { fetchWithUserAgent } from '../shared/user-agent.js';
+import { isCrawlableUrl, matchesExcludePattern } from './links.js';
 import { parseSitemapXml, SitemapError } from './sitemap.js';
 
 export interface DiscoverFromSitemapOptions {
@@ -6,6 +7,8 @@ export interface DiscoverFromSitemapOptions {
   readonly maxPages: number;
   /** Path to the root sitemap, relative to baseUrl. Defaults to "/sitemap.xml". */
   readonly sitemapPath?: string;
+  /** Glob patterns matched against a URL pathname; matches are skipped. Defaults to none. */
+  readonly excludePaths?: readonly string[];
   /** Injectable for tests; defaults to the global fetch. */
   readonly fetchFn?: typeof fetch;
   /** Guards against pathological or cyclic sitemap indexes. Defaults to 3. */
@@ -15,8 +18,10 @@ export interface DiscoverFromSitemapOptions {
 /**
  * Discovers page URLs from a site's sitemap, following a sitemap index to
  * its sub-sitemaps as needed. Off-origin entries are dropped (a sitemap
- * should only ever list its own site, but nothing enforces that), duplicate
- * URLs are collapsed, and discovery stops as soon as maxPages is reached.
+ * should only ever list its own site, but nothing enforces that), non-page
+ * assets and excludePaths matches are filtered out (identically to
+ * crawlSite), duplicate URLs are collapsed, and discovery stops as soon as
+ * maxPages is reached.
  *
  * A failure to load the root sitemap is fatal (the caller should fall back
  * to crawling). A failure on a sub-sitemap referenced by an index is not:
@@ -27,6 +32,7 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
     baseUrl,
     maxPages,
     sitemapPath = '/sitemap.xml',
+    excludePaths = [],
     fetchFn = fetchWithUserAgent,
     maxSitemapDepth = 3,
   } = options;
@@ -83,19 +89,25 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
       if (collected.length >= maxPages) {
         return;
       }
-      if (!isSameOrigin(pageUrl, origin) || seenPages.has(pageUrl)) {
+      if (seenPages.has(pageUrl)) {
         continue;
       }
       seenPages.add(pageUrl);
+
+      let parsed: URL;
+      try {
+        parsed = new URL(pageUrl);
+      } catch {
+        continue;
+      }
+      if (
+        parsed.origin !== origin ||
+        !isCrawlableUrl(parsed) ||
+        matchesExcludePattern(parsed.pathname, excludePaths)
+      ) {
+        continue;
+      }
       collected.push(pageUrl);
     }
-  }
-}
-
-function isSameOrigin(url: string, origin: string): boolean {
-  try {
-    return new URL(url).origin === origin;
-  } catch {
-    return false;
   }
 }
