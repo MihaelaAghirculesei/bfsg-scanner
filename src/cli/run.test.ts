@@ -65,4 +65,19 @@ describe('run', () => {
 
     await expect(run(['--config', path])).resolves.toBe(3);
   }, 30_000);
+
+  it('returns 3 when discovery finds no scannable pages', async () => {
+    const blockedDir = mkdtempSync(join(tmpdir(), 'bfsg-cli-blocked-'));
+    writeFileSync(join(blockedDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf8');
+    writeFileSync(join(blockedDir, 'index.html'), '<!doctype html><title>x</title>', 'utf8');
+    const blockedServer = await startStaticServer(blockedDir);
+    try {
+      const path = writeConfig(blockedServer.url);
+
+      await expect(run(['--config', path])).resolves.toBe(3);
+    } finally {
+      await blockedServer.close();
+      rmSync(blockedDir, { recursive: true, force: true });
+    }
+  }, 30_000);
 });
