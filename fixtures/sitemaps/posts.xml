@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//github.blog/wp-content/plugins/wordpress-seo/css/main-sitemap.xsl"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.google.com/schemas/sitemap-image/1.1 http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<url>
+		<loc>https://github.blog/latest/</loc>
+		<lastmod>2026-08-25T21:35:14+00:00</lastmod>
+	</url>
+<url>
+		<loc>https://github.blog/news-insights/the-library/hello-world/</loc>
+		<lastmod>2015-05-19T22:00:00+00:00</lastmod>
+	</url>
+<url>
+		<loc>https://github.blog/news-insights/the-library/brubeck/</loc>
+		<lastmod>2015-06-15T07:00:00+00:00</lastmod>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/brubeck-node-graph.png</image:loc>
+		</image:image>
+	</url>
+<url>
+		<loc>https://github.blog/news-insights/the-library/exception-monitoring-and-response/</loc>
+		<lastmod>2015-06-16T07:00:00+00:00</lastmod>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-1.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/exception-levels.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-8.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-9.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-6.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-10.png</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>https://github.blog/wp-content/uploads/2015/06/haystack-11.png</image:loc>
+		</image:image>
+	</url>
+<url>
+		<loc>https://github.blog/engineering/engineering-principles/scripts-to-rule-them-all/</loc>
+		<lastmod>2015-06-30T07:00:00+00:00</lastmod>
+	</url>
+<url>
+		<loc>https://github.blog/security/subresource-integrity/</loc>
+		<lastmod>2015-09-19T07:00:00+00:00</lastmod>
+	</url>
+</urlset>
