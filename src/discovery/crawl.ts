@@ -1,3 +1,4 @@
+import { fetchWithUserAgent } from '../shared/user-agent.js';
 import { extractLinks, isCrawlableUrl, matchesExcludePattern } from './links.js';
 import { fetchRobotsRules, isAllowedByRobots } from './robots.js';
 
@@ -23,7 +24,7 @@ export interface CrawlOptions {
  * page list in the same order.
  */
 export async function crawlSite(options: CrawlOptions): Promise<string[]> {
-  const { baseUrl, maxPages, excludePaths = [], fetchFn = fetch } = options;
+  const { baseUrl, maxPages, excludePaths = [], fetchFn = fetchWithUserAgent } = options;
 
   const origin = new URL(baseUrl).origin;
   const robotsRules = await fetchRobotsRules(origin, fetchFn);

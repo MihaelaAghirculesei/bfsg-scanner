@@ -1,3 +1,5 @@
+import { fetchWithUserAgent } from '../shared/user-agent.js';
+
 export interface RobotsRule {
   readonly pattern: string;
   readonly allow: boolean;
@@ -73,7 +75,7 @@ export function isAllowedByRobots(pathAndQuery: string, rules: readonly RobotsRu
 
 export async function fetchRobotsRules(
   origin: string,
-  fetchFn: typeof fetch = fetch,
+  fetchFn: typeof fetch = fetchWithUserAgent,
 ): Promise<readonly RobotsRule[]> {
   try {
     const response = await fetchFn(new URL('/robots.txt', origin).toString());

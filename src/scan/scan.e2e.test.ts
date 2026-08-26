@@ -33,7 +33,12 @@ describe('scan (golden fixture site)', () => {
     const pageNames = Object.keys(EXPECTED);
     const result = await scan(
       pageNames.map((name) => `${server.url}/${name}`),
-      { wcagTags: ['wcag2a', 'wcag2aa', 'wcag21aa'] },
+      {
+        wcagTags: ['wcag2a', 'wcag2aa', 'wcag21aa'],
+        // All 6 pages share one host; this test cares about correctness,
+        // not the production rate limit's pacing.
+        hostRateLimitMs: 0,
+      },
     );
 
     expect(result.pages).toHaveLength(pageNames.length);

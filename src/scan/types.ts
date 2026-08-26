@@ -40,4 +40,8 @@ export interface ScanOptions {
   readonly timeoutMs?: number;
   /** Extra attempts after the first one fails. Defaults to 1 (two attempts total). */
   readonly retries?: number;
+  /** Maximum number of pages scanned in parallel. Defaults to 3. */
+  readonly concurrency?: number;
+  /** Minimum time between two requests to the same host, in milliseconds. Defaults to 1000. */
+  readonly hostRateLimitMs?: number;
 }
