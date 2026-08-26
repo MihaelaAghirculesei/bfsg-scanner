@@ -1,3 +1,4 @@
+import { fetchWithUserAgent } from '../shared/user-agent.js';
 import { parseSitemapXml, SitemapError } from './sitemap.js';
 
 export interface DiscoverFromSitemapOptions {
@@ -26,7 +27,7 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
     baseUrl,
     maxPages,
     sitemapPath = '/sitemap.xml',
-    fetchFn = fetch,
+    fetchFn = fetchWithUserAgent,
     maxSitemapDepth = 3,
   } = options;
 
