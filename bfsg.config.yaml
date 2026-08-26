@@ -1,0 +1,28 @@
+# Example bfsg-scanner configuration.
+# Only baseUrl is required — every other field falls back to the default
+# shown here if omitted.
+
+baseUrl: "https://example.de"
+
+# Maximum number of pages to scan (sitemap + crawl fallback combined).
+maxPages: 50
+
+# axe-core rule sets to run. WCAG 2.1 AA is the legal baseline under
+# EN 301 549 V3.2.1 / BFSG today.
+wcagTags:
+  - wcag2a
+  - wcag2aa
+  - wcag21aa
+
+# Paths excluded from crawling (glob-style, matched against the URL path).
+excludePaths: []
+
+# Directory the JSON/HTML/PDF reports are written to.
+outputDir: reports
+
+# Minimum severity that causes the scan to exit non-zero.
+# One of: critical | serious | moderate | minor
+failOn: serious
+
+# Language used for the generated report text. One of: de | en
+reportLanguage: de
