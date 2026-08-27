@@ -7,18 +7,16 @@ const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
 
 /**
  * Exit code contract:
- *   0 - scan completed
+ *   0 - scan completed, nothing at or above the `failOn` threshold
+ *   1 - scan completed, violations at or above `failOn` were found
  *   2 - invalid or missing configuration
  *   3 - no pages were discovered, or one or more pages could not be scanned
  *       (navigation/browser failure)
  *
- * The JSON report is written for every completed scan, including one that
- * exits 3 for partial page failures — the partial results and the failures
- * themselves are still worth persisting.
- *
- * A threshold-based exit code (violations at or above `failOn`) lands with
- * scoring in a later change; every successful scan currently exits 0
- * regardless of what it found.
+ * 3 outranks 1: a run with unreachable pages scanned an incomplete site, so
+ * "no violations found" would be a claim the data cannot support. The
+ * report is still written first, so the partial results and the failure
+ * entries survive either way.
  */
 export function parseArgs(argv: readonly string[]): { configPath: string } {
   const flagIndex = argv.indexOf('--config');
@@ -86,5 +84,19 @@ export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise
   console.log(
     `Scanned ${report.summary.pagesScanned} page(s), ${report.summary.totalViolations} rule(s) violated.`,
   );
+
+  const { verdict } = report;
+  if (verdict.unrankedViolations > 0) {
+    console.warn(
+      `${verdict.unrankedViolations} violation(s) carry no impact rating and were excluded from the ${config.failOn} threshold. Review them in the report.`,
+    );
+  }
+
+  if (!verdict.passed) {
+    console.error(
+      `${verdict.violationsAtOrAboveThreshold} violation(s) at or above "${config.failOn}".`,
+    );
+    return 1;
+  }
   return 0;
 }
