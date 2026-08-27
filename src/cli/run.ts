@@ -1,5 +1,6 @@
 import { type Config, ConfigError, loadConfig } from '../config/index.js';
 import { discoverSite } from '../discovery/index.js';
+import { buildReport, writeReport } from '../report/index.js';
 import { scan } from '../scan/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
@@ -10,6 +11,10 @@ const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
  *   2 - invalid or missing configuration
  *   3 - no pages were discovered, or one or more pages could not be scanned
  *       (navigation/browser failure)
+ *
+ * The JSON report is written for every completed scan, including one that
+ * exits 3 for partial page failures — the partial results and the failures
+ * themselves are still worth persisting.
  *
  * A threshold-based exit code (violations at or above `failOn`) lands with
  * scoring in a later change; every successful scan currently exits 0
@@ -61,6 +66,15 @@ export async function run(argv: readonly string[]): Promise<number> {
   console.log(`Discovered ${urls.length} page(s) to scan.`);
 
   const result = await scan(urls, { wcagTags: config.wcagTags });
+
+  const report = buildReport(result, {
+    baseUrl: config.baseUrl,
+    wcagTags: config.wcagTags,
+    failOn: config.failOn,
+  });
+  const reportPath = await writeReport(report, config.outputDir);
+  console.log(`Report written to ${reportPath}`);
+
   const failedPages = result.pages.filter((page) => page.status === 'error');
   if (failedPages.length > 0) {
     for (const page of failedPages) {
@@ -69,10 +83,8 @@ export async function run(argv: readonly string[]): Promise<number> {
     return 3;
   }
 
-  const violationCount = result.pages.reduce(
-    (sum, page) => sum + (page.status === 'ok' ? page.violations.length : 0),
-    0,
+  console.log(
+    `Scanned ${report.summary.pagesScanned} page(s), ${report.summary.totalViolations} rule(s) violated.`,
   );
-  console.log(`Scanned ${result.pages.length} page(s), ${violationCount} rule(s) violated.`);
   return 0;
 }
