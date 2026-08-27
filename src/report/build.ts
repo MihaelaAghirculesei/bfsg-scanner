@@ -8,7 +8,9 @@ import type {
   ReportSummary,
   ReportTarget,
   ReportToolInfo,
+  ReportVerdict,
 } from './types.js';
+import { countAtOrAbove, type ImpactThreshold } from './verdict.js';
 
 export interface BuildReportOptions {
   /** Overrides the generated-at timestamp; defaults to now. Injectable for tests. */
@@ -28,14 +30,25 @@ export function buildReport(
   options: BuildReportOptions = {},
 ): Report {
   const { generatedAt = new Date(), tool = readToolInfo() } = options;
+  const summary = summarise(scanResult);
 
   return {
     schemaVersion: SCHEMA_VERSION,
     generatedAt: generatedAt.toISOString(),
     tool,
     target,
-    summary: summarise(scanResult),
+    summary,
+    verdict: judge(summary, target.failOn),
     pages: scanResult.pages,
+  };
+}
+
+function judge(summary: ReportSummary, failOn: ImpactThreshold): ReportVerdict {
+  const violationsAtOrAboveThreshold = countAtOrAbove(summary.violationsByImpact, failOn);
+  return {
+    violationsAtOrAboveThreshold,
+    unrankedViolations: summary.violationsByImpact.unknown,
+    passed: violationsAtOrAboveThreshold === 0,
   };
 }
 
