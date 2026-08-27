@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,8 +32,18 @@ afterEach(() => {
 
 function writeConfig(baseUrl: string): string {
   const path = join(dir, 'bfsg.config.yaml');
-  writeFileSync(path, `baseUrl: ${baseUrl}\n`, 'utf8');
+  // outputDir points at the per-test temp dir so a run never writes into the repo.
+  writeFileSync(path, `baseUrl: ${baseUrl}\noutputDir: ${JSON.stringify(dir)}\n`, 'utf8');
   return path;
+}
+
+function readReport(): {
+  schemaVersion: number;
+  target: { baseUrl: string };
+  summary: { pagesScanned: number; totalViolations: number };
+  pages: unknown[];
+} {
+  return JSON.parse(readFileSync(join(dir, 'report.json'), 'utf8'));
 }
 
 describe('run', () => {
@@ -41,6 +51,19 @@ describe('run', () => {
     const path = writeConfig(`${server.url}/clean.html`);
 
     await expect(run(['--config', path])).resolves.toBe(0);
+  }, 30_000);
+
+  it('writes a JSON report describing the scan', async () => {
+    const path = writeConfig(`${server.url}/clean.html`);
+
+    await expect(run(['--config', path])).resolves.toBe(0);
+
+    const report = readReport();
+    expect(report.schemaVersion).toBe(1);
+    expect(report.target.baseUrl).toBe(`${server.url}/clean.html`);
+    expect(report.summary.pagesScanned).toBe(1);
+    expect(report.summary.totalViolations).toBe(0);
+    expect(report.pages).toHaveLength(1);
   }, 30_000);
 
   it('returns 2 when the config file is missing', async () => {
