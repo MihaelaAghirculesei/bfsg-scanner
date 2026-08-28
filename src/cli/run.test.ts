@@ -156,6 +156,16 @@ describe('run', () => {
     expect(readHtmlReport()).toContain('<html lang="de">');
   }, 30_000);
 
+  it('writes a PDF report alongside the JSON and HTML', async () => {
+    const path = writeConfig(`${server.url}/clean.html`);
+
+    await expect(runCli(['--config', path])).resolves.toBe(0);
+
+    const pdf = readFileSync(join(dir, 'report.pdf'));
+    expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+    expect(pdf.length).toBeGreaterThan(1000);
+  }, 30_000);
+
   it('returns 2 when the config file is missing', async () => {
     const path = join(dir, 'missing.yaml');
 
