@@ -64,6 +64,12 @@ function readHtmlReport(): string {
   return readFileSync(join(dir, 'report.html'), 'utf8');
 }
 
+function consoleOutput(): string {
+  const lines = (method: 'log' | 'warn' | 'error') =>
+    vi.mocked(console[method]).mock.calls.map((args) => args.join(' '));
+  return [...lines('log'), ...lines('warn'), ...lines('error')].join('\n');
+}
+
 describe('run', () => {
   it('returns 0 for a valid config that scans cleanly', async () => {
     const path = writeConfig(`${server.url}/clean.html`);
@@ -94,6 +100,24 @@ describe('run', () => {
     const report = readReport();
     expect(report.summary.totalViolations).toBe(1);
     expect(report.verdict.passed).toBe(true);
+  }, 30_000);
+
+  it('prints the breached WCAG SC and EN 301 549 clauses when there are violations', async () => {
+    const path = writeConfig(`${server.url}/contrast.html`, 'failOn: critical\n');
+
+    await runCli(['--config', path]);
+
+    const out = consoleOutput();
+    expect(out).toContain('WCAG 2.1 SC breached: 1.4.3');
+    expect(out).toContain('EN 301 549 clauses breached: 9.1.4.3');
+  }, 30_000);
+
+  it('does not print a breached-clauses line for a clean scan', async () => {
+    const path = writeConfig(`${server.url}/clean.html`);
+
+    await runCli(['--config', path]);
+
+    expect(consoleOutput()).not.toContain('breached');
   }, 30_000);
 
   it('writes a JSON report describing the scan', async () => {
