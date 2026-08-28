@@ -60,6 +60,10 @@ function readReport(): {
   return JSON.parse(readFileSync(join(dir, 'report.json'), 'utf8'));
 }
 
+function readHtmlReport(): string {
+  return readFileSync(join(dir, 'report.html'), 'utf8');
+}
+
 describe('run', () => {
   it('returns 0 for a valid config that scans cleanly', async () => {
     const path = writeConfig(`${server.url}/clean.html`);
@@ -103,6 +107,29 @@ describe('run', () => {
     expect(report.summary.pagesScanned).toBe(1);
     expect(report.summary.totalViolations).toBe(0);
     expect(report.pages).toHaveLength(1);
+  }, 30_000);
+
+  it('writes an HTML report in the configured language alongside the JSON', async () => {
+    const path = writeConfig(
+      `${server.url}/contrast.html`,
+      'reportLanguage: en\nfailOn: critical\n',
+    );
+
+    await expect(runCli(['--config', path])).resolves.toBe(0);
+
+    const html = readHtmlReport();
+    expect(html.startsWith('<!doctype html>')).toBe(true);
+    expect(html).toContain('<html lang="en">');
+    expect(html).toContain('color-contrast');
+    expect(html).toContain('1.4.3');
+  }, 30_000);
+
+  it('defaults the HTML report to German', async () => {
+    const path = writeConfig(`${server.url}/clean.html`);
+
+    await expect(runCli(['--config', path])).resolves.toBe(0);
+
+    expect(readHtmlReport()).toContain('<html lang="de">');
   }, 30_000);
 
   it('returns 2 when the config file is missing', async () => {
