@@ -3,7 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Report } from './types.js';
-import { HTML_REPORT_FILENAME, REPORT_FILENAME, writeHtmlReport, writeReport } from './write.js';
+import {
+  HTML_REPORT_FILENAME,
+  PDF_REPORT_FILENAME,
+  REPORT_FILENAME,
+  writeHtmlReport,
+  writePdfReport,
+  writeReport,
+} from './write.js';
 
 const REPORT: Report = {
   schemaVersion: 1,
@@ -83,5 +90,24 @@ describe('writeHtmlReport', () => {
     await writeHtmlReport('<html>new</html>', nested);
 
     expect(readFileSync(join(nested, HTML_REPORT_FILENAME), 'utf8')).toContain('new');
+  });
+});
+
+describe('writePdfReport', () => {
+  it('writes the bytes verbatim to <dir>/report.pdf and returns the path', async () => {
+    const bytes = Buffer.from('%PDF-1.7\n...binary...\n%%EOF');
+
+    const path = await writePdfReport(bytes, dir);
+
+    expect(path).toBe(join(dir, PDF_REPORT_FILENAME));
+    expect(readFileSync(path).equals(bytes)).toBe(true);
+  });
+
+  it('creates the output directory and overwrites a previous run', async () => {
+    const nested = join(dir, 'deep', 'out');
+    await writePdfReport(Buffer.from('old'), nested);
+    await writePdfReport(Buffer.from('new'), nested);
+
+    expect(readFileSync(join(nested, PDF_REPORT_FILENAME)).toString()).toBe('new');
   });
 });
