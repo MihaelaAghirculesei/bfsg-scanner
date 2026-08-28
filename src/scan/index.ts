@@ -3,6 +3,7 @@ export type {
   PageScanFailure,
   PageScanResult,
   PageScanSuccess,
+  ScanDeps,
   ScanFinding,
   ScanNode,
   ScanOptions,

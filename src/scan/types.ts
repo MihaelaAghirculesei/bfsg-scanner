@@ -1,4 +1,5 @@
 import type { ImpactValue, UnlabelledFrameSelector } from 'axe-core';
+import type { Browser } from 'playwright';
 
 export interface ScanNode {
   readonly target: UnlabelledFrameSelector;
@@ -44,4 +45,13 @@ export interface ScanOptions {
   readonly concurrency?: number;
   /** Minimum time between two requests to the same host, in milliseconds. Defaults to 1000. */
   readonly hostRateLimitMs?: number;
+}
+
+export interface ScanDeps {
+  /**
+   * Reuse an already-launched browser instead of launching one per call.
+   * The caller owns its lifecycle: `scan` never closes a browser it did
+   * not launch. Each page still gets its own fresh, isolated context.
+   */
+  readonly browser?: Browser;
 }

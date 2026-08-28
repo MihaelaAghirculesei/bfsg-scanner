@@ -1,7 +1,7 @@
 import { type Config, ConfigError, loadConfig } from '../config/index.js';
 import { discoverSite } from '../discovery/index.js';
 import { buildReport, writeReport } from '../report/index.js';
-import { scan } from '../scan/index.js';
+import { type ScanDeps, scan } from '../scan/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
 
@@ -34,7 +34,7 @@ export function parseArgs(argv: readonly string[]): { configPath: string } {
   return { configPath };
 }
 
-export async function run(argv: readonly string[]): Promise<number> {
+export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise<number> {
   let configPath: string;
   try {
     ({ configPath } = parseArgs(argv));
@@ -65,7 +65,7 @@ export async function run(argv: readonly string[]): Promise<number> {
   }
   console.log(`Discovered ${urls.length} page(s) to scan.`);
 
-  const result = await scan(urls, { wcagTags: config.wcagTags });
+  const result = await scan(urls, { wcagTags: config.wcagTags }, deps);
 
   const report = buildReport(result, {
     baseUrl: config.baseUrl,

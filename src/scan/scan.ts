@@ -4,25 +4,32 @@ import { type Browser, chromium } from 'playwright';
 import { runWithConcurrency } from '../shared/pool.js';
 import { HostRateLimiter } from '../shared/rate-limiter.js';
 import { USER_AGENT } from '../shared/user-agent.js';
-import type { PageScanResult, ScanFinding, ScanOptions, ScanResult } from './types.js';
+import type { PageScanResult, ScanDeps, ScanFinding, ScanOptions, ScanResult } from './types.js';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_RETRIES = 1;
 const DEFAULT_CONCURRENCY = 3;
 const DEFAULT_HOST_RATE_LIMIT_MS = 1_000;
 
-export async function scan(urls: readonly string[], options: ScanOptions): Promise<ScanResult> {
+export async function scan(
+  urls: readonly string[],
+  options: ScanOptions,
+  deps: ScanDeps = {},
+): Promise<ScanResult> {
   const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
   const rateLimiter = new HostRateLimiter(options.hostRateLimitMs ?? DEFAULT_HOST_RATE_LIMIT_MS);
 
-  const browser = await chromium.launch();
+  const browser = deps.browser ?? (await chromium.launch());
+  const launchedHere = deps.browser === undefined;
   try {
     const pages = await runWithConcurrency(urls, concurrency, (url) =>
       scanPage(browser, url, options, rateLimiter),
     );
     return { pages };
   } finally {
-    await browser.close();
+    if (launchedHere) {
+      await browser.close();
+    }
   }
 }
 
