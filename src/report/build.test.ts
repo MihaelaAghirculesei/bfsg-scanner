@@ -11,9 +11,19 @@ const TARGET: ReportTarget = {
   failOn: 'serious',
 };
 
+// A few real axe-core rule tag arrays, so findings under test carry the
+// same shape the scan engine produces.
+const TAGS: Readonly<Record<string, readonly string[]>> = {
+  'color-contrast': ['cat.color', 'wcag2aa', 'wcag143', 'EN-301-549', 'EN-9.1.4.3', 'ACT'],
+  'image-alt': ['cat.text-alternatives', 'wcag2a', 'wcag111', 'EN-301-549', 'EN-9.1.1.1'],
+  label: ['cat.forms', 'wcag2a', 'wcag412', 'EN-301-549', 'EN-9.4.1.2'],
+  'link-name': ['cat.name-role-value', 'wcag2a', 'wcag244', 'wcag412', 'EN-9.2.4.4', 'EN-9.4.1.2'],
+};
+
 function finding(ruleId: string, impact: ScanFinding['impact']): ScanFinding {
   return {
     ruleId,
+    tags: TAGS[ruleId] ?? [],
     impact,
     description: `${ruleId} description`,
     help: `${ruleId} help`,
