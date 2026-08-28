@@ -20,8 +20,10 @@ excludePaths: []
 # Directory the JSON/HTML/PDF reports are written to.
 outputDir: reports
 
-# Minimum severity that causes the scan to exit non-zero.
+# Minimum severity that causes the scan to exit 1.
 # One of: critical | serious | moderate | minor
+# A violation counts when its impact is at or above this level. Violations
+# axe leaves unrated are warned about, not counted — see docs/adr/0003.
 failOn: serious
 
 # Language used for the generated report text. One of: de | en

@@ -30,6 +30,7 @@ const runCli = (argv: readonly string[]): Promise<number> => run(argv, { browser
 beforeEach(() => {
   dir = mkdtempSync(join(tmpdir(), 'bfsg-cli-test-'));
   vi.spyOn(console, 'log').mockImplementation(() => undefined);
+  vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
@@ -38,10 +39,10 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function writeConfig(baseUrl: string): string {
+function writeConfig(baseUrl: string, extra = ''): string {
   const path = join(dir, 'bfsg.config.yaml');
   // outputDir points at the per-test temp dir so a run never writes into the repo.
-  writeFileSync(path, `baseUrl: ${baseUrl}\noutputDir: ${JSON.stringify(dir)}\n`, 'utf8');
+  writeFileSync(path, `baseUrl: ${baseUrl}\noutputDir: ${JSON.stringify(dir)}\n${extra}`, 'utf8');
   return path;
 }
 
@@ -49,6 +50,11 @@ function readReport(): {
   schemaVersion: number;
   target: { baseUrl: string };
   summary: { pagesScanned: number; totalViolations: number };
+  verdict: {
+    violationsAtOrAboveThreshold: number;
+    unrankedViolations: number;
+    passed: boolean;
+  };
   pages: unknown[];
 } {
   return JSON.parse(readFileSync(join(dir, 'report.json'), 'utf8'));
@@ -59,6 +65,31 @@ describe('run', () => {
     const path = writeConfig(`${server.url}/clean.html`);
 
     await expect(runCli(['--config', path])).resolves.toBe(0);
+  }, 30_000);
+
+  // contrast.html carries exactly one color-contrast violation, impact
+  // "serious" (see fixtures/SITE_TRUTH.md) - the threshold's own boundary.
+  it('returns 1 when a violation reaches the failOn threshold', async () => {
+    const path = writeConfig(`${server.url}/contrast.html`, 'failOn: serious\n');
+
+    await expect(runCli(['--config', path])).resolves.toBe(1);
+
+    const report = readReport();
+    expect(report.verdict).toEqual({
+      violationsAtOrAboveThreshold: 1,
+      unrankedViolations: 0,
+      passed: false,
+    });
+  }, 30_000);
+
+  it('returns 0 when the same violation sits below the failOn threshold', async () => {
+    const path = writeConfig(`${server.url}/contrast.html`, 'failOn: critical\n');
+
+    await expect(runCli(['--config', path])).resolves.toBe(0);
+
+    const report = readReport();
+    expect(report.summary.totalViolations).toBe(1);
+    expect(report.verdict.passed).toBe(true);
   }, 30_000);
 
   it('writes a JSON report describing the scan', async () => {

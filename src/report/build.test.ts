@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import type { PageScanResult, ScanFinding, ScanResult } from '../scan/index.js';
 import { buildReport } from './build.js';
+import type { ReportTarget } from './types.js';
 
 const FIXED_AT = new Date('2026-01-02T03:04:05.000Z');
 const TOOL = { name: 'bfsg-scanner', version: '9.9.9' };
-const TARGET = { baseUrl: 'https://example.de', wcagTags: ['wcag2aa'], failOn: 'serious' };
+const TARGET: ReportTarget = {
+  baseUrl: 'https://example.de',
+  wcagTags: ['wcag2aa'],
+  failOn: 'serious',
+};
 
 function finding(ruleId: string, impact: ScanFinding['impact']): ScanFinding {
   return {
@@ -44,6 +49,11 @@ describe('buildReport', () => {
         totalViolations: 0,
         violationsByImpact: { critical: 0, serious: 0, moderate: 0, minor: 0, unknown: 0 },
       },
+      verdict: {
+        violationsAtOrAboveThreshold: 0,
+        unrankedViolations: 0,
+        passed: true,
+      },
       pages: [],
     });
   });
@@ -80,5 +90,61 @@ describe('buildReport', () => {
 
     expect(Number.isNaN(Date.parse(report.generatedAt))).toBe(false);
     expect(Date.parse(report.generatedAt)).toBeGreaterThanOrEqual(before);
+  });
+});
+
+describe('buildReport verdict', () => {
+  function verdictFor(failOn: ReportTarget['failOn'], violations: ScanFinding[]) {
+    return buildReport(
+      { pages: [okPage('https://example.de/a', violations)] },
+      { ...TARGET, failOn },
+      {
+        generatedAt: FIXED_AT,
+        tool: TOOL,
+      },
+    ).verdict;
+  }
+
+  it('passes when nothing reaches the threshold', () => {
+    expect(verdictFor('critical', [finding('color-contrast', 'serious')])).toEqual({
+      violationsAtOrAboveThreshold: 0,
+      unrankedViolations: 0,
+      passed: true,
+    });
+  });
+
+  it('fails on a violation at the threshold', () => {
+    expect(verdictFor('serious', [finding('color-contrast', 'serious')])).toEqual({
+      violationsAtOrAboveThreshold: 1,
+      unrankedViolations: 0,
+      passed: false,
+    });
+  });
+
+  it('fails on a violation above the threshold', () => {
+    expect(verdictFor('serious', [finding('image-alt', 'critical')])).toEqual({
+      violationsAtOrAboveThreshold: 1,
+      unrankedViolations: 0,
+      passed: false,
+    });
+  });
+
+  it('reports unranked violations separately without failing on them', () => {
+    expect(verdictFor('minor', [finding('weird-rule', null)])).toEqual({
+      violationsAtOrAboveThreshold: 0,
+      unrankedViolations: 1,
+      passed: true,
+    });
+  });
+
+  it('is scoped to scanned pages: a failed page cannot fail the verdict', () => {
+    const report = buildReport(
+      { pages: [{ status: 'error', url: 'https://example.de/a', error: 'boom' }] },
+      TARGET,
+      { generatedAt: FIXED_AT, tool: TOOL },
+    );
+
+    expect(report.summary.pagesFailed).toBe(1);
+    expect(report.verdict.passed).toBe(true);
   });
 });
