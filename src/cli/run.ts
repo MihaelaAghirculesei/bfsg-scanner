@@ -90,6 +90,12 @@ export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise
     `Scanned ${report.summary.pagesScanned} page(s), ${report.summary.totalViolations} rule(s) violated.`,
   );
 
+  const { breachedSuccessCriteria, breachedEn301549Clauses } = report.summary;
+  if (breachedSuccessCriteria.length > 0) {
+    console.log(`WCAG 2.1 SC breached: ${breachedSuccessCriteria.join(', ')}`);
+    console.log(`EN 301 549 clauses breached: ${breachedEn301549Clauses.join(', ')}`);
+  }
+
   const { verdict } = report;
   if (verdict.unrankedViolations > 0) {
     console.warn(
