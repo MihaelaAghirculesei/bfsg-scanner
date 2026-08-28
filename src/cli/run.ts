@@ -1,6 +1,6 @@
 import { type Config, ConfigError, loadConfig } from '../config/index.js';
 import { discoverSite } from '../discovery/index.js';
-import { buildReport, writeReport } from '../report/index.js';
+import { buildReport, renderHtmlReport, writeHtmlReport, writeReport } from '../report/index.js';
 import { type ScanDeps, scan } from '../scan/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
@@ -72,6 +72,11 @@ export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise
   });
   const reportPath = await writeReport(report, config.outputDir);
   console.log(`Report written to ${reportPath}`);
+  const htmlPath = await writeHtmlReport(
+    renderHtmlReport(report, config.reportLanguage),
+    config.outputDir,
+  );
+  console.log(`HTML report written to ${htmlPath}`);
 
   const failedPages = result.pages.filter((page) => page.status === 'error');
   if (failedPages.length > 0) {
