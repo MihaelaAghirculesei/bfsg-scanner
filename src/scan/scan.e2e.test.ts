@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { type Browser, chromium } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type StaticServer, startStaticServer } from '../testing/static-server.js';
 import { scan } from './scan.js';
@@ -19,13 +20,16 @@ const EXPECTED: Readonly<Record<string, { ruleId: string; nodes: number } | null
 const FIXTURES_SITE_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../../fixtures/site');
 
 let server: StaticServer;
+let browser: Browser;
 
 beforeAll(async () => {
   server = await startStaticServer(FIXTURES_SITE_DIR);
+  browser = await chromium.launch();
 });
 
 afterAll(async () => {
   await server.close();
+  await browser.close();
 });
 
 describe('scan (golden fixture site)', () => {
@@ -39,6 +43,7 @@ describe('scan (golden fixture site)', () => {
         // not the production rate limit's pacing.
         hostRateLimitMs: 0,
       },
+      { browser },
     );
 
     expect(result.pages).toHaveLength(pageNames.length);

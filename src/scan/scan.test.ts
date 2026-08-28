@@ -1,8 +1,22 @@
 import { createServer as createHttpServer, type Server as HttpServer } from 'node:http';
 import { createServer, type Server, type Socket } from 'node:net';
-import { describe, expect, it } from 'vitest';
+import { type Browser, chromium } from 'playwright';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { USER_AGENT } from '../shared/user-agent.js';
 import { scan } from './scan.js';
+
+// One browser for the whole file: scan() accepts an injected browser and
+// will not close it, so every test here shares a single Chromium launch
+// instead of paying for one each. Contexts stay per-page and isolated.
+let browser: Browser;
+
+beforeAll(async () => {
+  browser = await chromium.launch();
+});
+
+afterAll(async () => {
+  await browser.close();
+});
 
 /** A TCP server that accepts and immediately kills every connection, so
  * navigation always fails. Counts connection attempts to prove retries
@@ -64,12 +78,11 @@ describe('scan', () => {
   it('reports a page that refuses the connection as a failure, not a crash', async () => {
     const flaky = await startFlakyServer();
     try {
-      const result = await scan([`http://127.0.0.1:${flaky.port}/`], {
-        wcagTags: ['wcag2a'],
-        retries: 0,
-        timeoutMs: 5_000,
-        hostRateLimitMs: 0,
-      });
+      const result = await scan(
+        [`http://127.0.0.1:${flaky.port}/`],
+        { wcagTags: ['wcag2a'], retries: 0, timeoutMs: 5_000, hostRateLimitMs: 0 },
+        { browser },
+      );
 
       expect(result.pages).toHaveLength(1);
       expect(result.pages[0]?.status).toBe('error');
@@ -81,11 +94,11 @@ describe('scan', () => {
   it('retries once by default before giving up', async () => {
     const flaky = await startFlakyServer();
     try {
-      const result = await scan([`http://127.0.0.1:${flaky.port}/`], {
-        wcagTags: ['wcag2a'],
-        timeoutMs: 5_000,
-        hostRateLimitMs: 0,
-      });
+      const result = await scan(
+        [`http://127.0.0.1:${flaky.port}/`],
+        { wcagTags: ['wcag2a'], timeoutMs: 5_000, hostRateLimitMs: 0 },
+        { browser },
+      );
 
       expect(result.pages[0]?.status).toBe('error');
       expect(flaky.attempts()).toBe(2);
@@ -107,12 +120,11 @@ describe('scan', () => {
     const port = typeof address === 'object' && address !== null ? address.port : 0;
 
     try {
-      const result = await scan([`http://127.0.0.1:${port}/`], {
-        wcagTags: ['wcag2a'],
-        retries: 0,
-        timeoutMs: 500,
-        hostRateLimitMs: 0,
-      });
+      const result = await scan(
+        [`http://127.0.0.1:${port}/`],
+        { wcagTags: ['wcag2a'], retries: 0, timeoutMs: 500, hostRateLimitMs: 0 },
+        { browser },
+      );
 
       expect(result.pages[0]?.status).toBe('error');
       if (result.pages[0]?.status === 'error') {
@@ -137,11 +149,11 @@ describe('scan', () => {
     );
 
     try {
-      const result = await scan([serverA.url, serverB.url], {
-        wcagTags: ['wcag2a'],
-        concurrency: 2,
-        hostRateLimitMs: 0,
-      });
+      const result = await scan(
+        [serverA.url, serverB.url],
+        { wcagTags: ['wcag2a'], concurrency: 2, hostRateLimitMs: 0 },
+        { browser },
+      );
 
       expect(result.pages.every((page) => page.status === 'ok')).toBe(true);
 
@@ -163,11 +175,11 @@ describe('scan', () => {
 
     try {
       const start = Date.now();
-      const result = await scan([server.url, server.url, server.url], {
-        wcagTags: ['wcag2a'],
-        concurrency: 3,
-        hostRateLimitMs: rateLimitMs,
-      });
+      const result = await scan(
+        [server.url, server.url, server.url],
+        { wcagTags: ['wcag2a'], concurrency: 3, hostRateLimitMs: rateLimitMs },
+        { browser },
+      );
       const elapsed = Date.now() - start;
 
       expect(result.pages.every((page) => page.status === 'ok')).toBe(true);
@@ -191,10 +203,11 @@ describe('scan', () => {
     const port = typeof address === 'object' && address !== null ? address.port : 0;
 
     try {
-      const result = await scan([`http://127.0.0.1:${port}/`], {
-        wcagTags: ['wcag2a'],
-        hostRateLimitMs: 0,
-      });
+      const result = await scan(
+        [`http://127.0.0.1:${port}/`],
+        { wcagTags: ['wcag2a'], hostRateLimitMs: 0 },
+        { browser },
+      );
 
       expect(result.pages[0]?.status).toBe('ok');
       expect(receivedUserAgent).toBe(USER_AGENT);
