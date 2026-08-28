@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Report } from './types.js';
-import { REPORT_FILENAME, writeReport } from './write.js';
+import { HTML_REPORT_FILENAME, REPORT_FILENAME, writeHtmlReport, writeReport } from './write.js';
 
 const REPORT: Report = {
   schemaVersion: 1,
@@ -58,5 +58,30 @@ describe('writeReport', () => {
 
     const written = JSON.parse(readFileSync(join(dir, REPORT_FILENAME), 'utf8')) as Report;
     expect(written.summary.totalViolations).toBe(0);
+  });
+});
+
+describe('writeHtmlReport', () => {
+  it('writes the HTML to <dir>/report.html and returns the path', async () => {
+    const path = await writeHtmlReport('<!doctype html><html></html>', dir);
+
+    expect(path).toBe(join(dir, HTML_REPORT_FILENAME));
+    const raw = readFileSync(path, 'utf8');
+    expect(raw).toContain('<!doctype html>');
+    expect(raw.endsWith('\n')).toBe(true);
+  });
+
+  it('does not add a second trailing newline', async () => {
+    const path = await writeHtmlReport('<html></html>\n', dir);
+
+    expect(readFileSync(path, 'utf8').endsWith('</html>\n')).toBe(true);
+  });
+
+  it('creates the output directory and overwrites a previous run', async () => {
+    const nested = join(dir, 'deep', 'out');
+    await writeHtmlReport('<html>old</html>', nested);
+    await writeHtmlReport('<html>new</html>', nested);
+
+    expect(readFileSync(join(nested, HTML_REPORT_FILENAME), 'utf8')).toContain('new');
   });
 });
