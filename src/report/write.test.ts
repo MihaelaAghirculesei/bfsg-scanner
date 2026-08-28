@@ -16,6 +16,8 @@ const REPORT: Report = {
     pagesWithViolations: 0,
     totalViolations: 0,
     violationsByImpact: { critical: 0, serious: 0, moderate: 0, minor: 0, unknown: 0 },
+    breachedSuccessCriteria: [],
+    breachedEn301549Clauses: [],
   },
   verdict: { violationsAtOrAboveThreshold: 0, unrankedViolations: 0, passed: true },
   pages: [],

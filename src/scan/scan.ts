@@ -85,6 +85,7 @@ function safeHost(url: string): string | null {
 function mapFinding(result: Result | IncompleteResult): ScanFinding {
   return {
     ruleId: result.id,
+    tags: result.tags,
     impact: result.impact ?? null,
     description: result.description,
     help: result.help,

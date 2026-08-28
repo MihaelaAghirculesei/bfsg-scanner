@@ -9,6 +9,13 @@ export interface ScanNode {
 
 export interface ScanFinding {
   readonly ruleId: string;
+  /**
+   * The axe-core rule's tags, verbatim. Carries the standards mapping the
+   * report layer turns into clauses: `wcag<digits>` (a WCAG success
+   * criterion), `EN-9.x.x.x` (an EN 301 549 clause), plus category and
+   * ruleset markers. See `src/report/clauses.ts`.
+   */
+  readonly tags: readonly string[];
   readonly impact: ImpactValue;
   readonly description: string;
   readonly help: string;
