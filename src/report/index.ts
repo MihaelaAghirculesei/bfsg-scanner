@@ -1,8 +1,13 @@
 export type { BuildReportOptions } from './build.js';
 export { buildReport } from './build.js';
+export type { Clauses } from './clauses.js';
+export { clausesFor } from './clauses.js';
 export type {
   Report,
+  ReportFinding,
   ReportImpactCounts,
+  ReportPage,
+  ReportPageSuccess,
   ReportSummary,
   ReportTarget,
   ReportToolInfo,

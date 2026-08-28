@@ -1,10 +1,13 @@
 import { readFileSync } from 'node:fs';
 import type { ImpactValue } from 'axe-core';
 import { SCHEMA_VERSION } from '../index.js';
-import type { ScanResult } from '../scan/index.js';
+import type { ScanFinding, ScanResult } from '../scan/index.js';
+import { clausesFor, compareDotted } from './clauses.js';
 import type {
   Report,
+  ReportFinding,
   ReportImpactCounts,
+  ReportPage,
   ReportSummary,
   ReportTarget,
   ReportToolInfo,
@@ -30,7 +33,8 @@ export function buildReport(
   options: BuildReportOptions = {},
 ): Report {
   const { generatedAt = new Date(), tool = readToolInfo() } = options;
-  const summary = summarise(scanResult);
+  const pages = scanResult.pages.map(enrichPage);
+  const summary = summarise(pages);
 
   return {
     schemaVersion: SCHEMA_VERSION,
@@ -39,8 +43,25 @@ export function buildReport(
     target,
     summary,
     verdict: judge(summary, target.failOn),
-    pages: scanResult.pages,
+    pages,
   };
+}
+
+/** Attaches the breached WCAG / EN 301 549 clauses to every finding on a scanned page. */
+function enrichPage(page: ScanResult['pages'][number]): ReportPage {
+  if (page.status === 'error') {
+    return page;
+  }
+  return {
+    status: 'ok',
+    url: page.url,
+    violations: page.violations.map(withClauses),
+    incomplete: page.incomplete.map(withClauses),
+  };
+}
+
+function withClauses(finding: ScanFinding): ReportFinding {
+  return { ...finding, clauses: clausesFor(finding.tags) };
 }
 
 function judge(summary: ReportSummary, failOn: ImpactThreshold): ReportVerdict {
@@ -52,7 +73,7 @@ function judge(summary: ReportSummary, failOn: ImpactThreshold): ReportVerdict {
   };
 }
 
-function summarise(scanResult: ScanResult): ReportSummary {
+function summarise(pages: readonly ReportPage[]): ReportSummary {
   const byImpact: Record<keyof ReportImpactCounts, number> = {
     critical: 0,
     serious: 0,
@@ -60,12 +81,14 @@ function summarise(scanResult: ScanResult): ReportSummary {
     minor: 0,
     unknown: 0,
   };
+  const breachedSuccessCriteria = new Set<string>();
+  const breachedEn301549Clauses = new Set<string>();
 
   let pagesFailed = 0;
   let pagesWithViolations = 0;
   let totalViolations = 0;
 
-  for (const page of scanResult.pages) {
+  for (const page of pages) {
     if (page.status === 'error') {
       pagesFailed += 1;
       continue;
@@ -76,15 +99,23 @@ function summarise(scanResult: ScanResult): ReportSummary {
     totalViolations += page.violations.length;
     for (const finding of page.violations) {
       byImpact[impactBucket(finding.impact)] += 1;
+      for (const sc of finding.clauses.wcagSc) {
+        breachedSuccessCriteria.add(sc);
+      }
+      for (const clause of finding.clauses.en301549) {
+        breachedEn301549Clauses.add(clause);
+      }
     }
   }
 
   return {
-    pagesScanned: scanResult.pages.length,
+    pagesScanned: pages.length,
     pagesFailed,
     pagesWithViolations,
     totalViolations,
     violationsByImpact: byImpact,
+    breachedSuccessCriteria: [...breachedSuccessCriteria].sort(compareDotted),
+    breachedEn301549Clauses: [...breachedEn301549Clauses].sort(compareDotted),
   };
 }
 

@@ -11,8 +11,7 @@ const TARGET: ReportTarget = {
   failOn: 'serious',
 };
 
-// A few real axe-core rule tag arrays, so findings under test carry the
-// same shape the scan engine produces.
+// Real axe-core rule tags, so the clause mapping is exercised end to end.
 const TAGS: Readonly<Record<string, readonly string[]>> = {
   'color-contrast': ['cat.color', 'wcag2aa', 'wcag143', 'EN-301-549', 'EN-9.1.4.3', 'ACT'],
   'image-alt': ['cat.text-alternatives', 'wcag2a', 'wcag111', 'EN-301-549', 'EN-9.1.1.1'],
@@ -58,6 +57,8 @@ describe('buildReport', () => {
         pagesWithViolations: 0,
         totalViolations: 0,
         violationsByImpact: { critical: 0, serious: 0, moderate: 0, minor: 0, unknown: 0 },
+        breachedSuccessCriteria: [],
+        breachedEn301549Clauses: [],
       },
       verdict: {
         violationsAtOrAboveThreshold: 0,
@@ -85,13 +86,60 @@ describe('buildReport', () => {
       pagesWithViolations: 2,
       totalViolations: 3,
       violationsByImpact: { critical: 1, serious: 1, moderate: 0, minor: 0, unknown: 1 },
+      breachedSuccessCriteria: ['1.1.1', '1.4.3'],
+      breachedEn301549Clauses: ['9.1.1.1', '9.1.4.3'],
     });
   });
 
-  it('passes page results through verbatim', () => {
-    const pages = [okPage('https://example.de/a', [finding('label', 'critical')])];
+  it('keeps page structure and enriches each finding with its breached clauses', () => {
+    const report = build([
+      okPage('https://example.de/a', [finding('label', 'critical')]),
+      { status: 'error', url: 'https://example.de/b', error: 'net::ERR_ABORTED' },
+    ]);
 
-    expect(build(pages).pages).toEqual(pages);
+    expect(report.pages[1]).toEqual({
+      status: 'error',
+      url: 'https://example.de/b',
+      error: 'net::ERR_ABORTED',
+    });
+    const page = report.pages[0];
+    expect(page?.status).toBe('ok');
+    if (page?.status !== 'ok') {
+      return;
+    }
+    expect(page.violations[0]).toMatchObject({
+      ruleId: 'label',
+      clauses: { wcagSc: ['4.1.2'], en301549: ['9.4.1.2'] },
+    });
+  });
+
+  it('maps a finding to every WCAG SC and EN clause its rule carries', () => {
+    const report = build([okPage('https://example.de/a', [finding('link-name', 'serious')])]);
+    const page = report.pages[0];
+    if (page?.status !== 'ok') {
+      throw new Error('expected an ok page');
+    }
+
+    expect(page.violations[0]?.clauses).toEqual({
+      wcagSc: ['2.4.4', '4.1.2'],
+      en301549: ['9.2.4.4', '9.4.1.2'],
+    });
+  });
+
+  it('rolls up distinct breached clauses across pages, ignoring duplicates and incomplete', () => {
+    const report = build([
+      okPage('https://example.de/a', [finding('color-contrast', 'serious')]),
+      okPage('https://example.de/b', [finding('color-contrast', 'serious')]),
+      {
+        status: 'ok',
+        url: 'https://example.de/c',
+        violations: [],
+        incomplete: [finding('image-alt', null)],
+      },
+    ]);
+
+    expect(report.summary.breachedSuccessCriteria).toEqual(['1.4.3']);
+    expect(report.summary.breachedEn301549Clauses).toEqual(['9.1.4.3']);
   });
 
   it('defaults generatedAt to a valid current ISO timestamp', () => {

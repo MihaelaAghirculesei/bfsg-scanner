@@ -8,16 +8,21 @@ axe-core upgrade changes any of them, the golden test (`src/scan/*.e2e.test.ts`,
 added on top of this fixture set) will fail and this file must be updated
 alongside the explanation, not silently.
 
-| Page | Violations | Rule | Nodes |
-|---|---|---|---|
-| `clean.html` | 0 | — | — |
-| `contrast.html` | 1 | `color-contrast` | 1 |
-| `missing-alt.html` | 1 | `image-alt` | 1 |
-| `missing-label.html` | 1 | `label` | 1 |
-| `missing-lang.html` | 1 | `html-has-lang` | 1 |
-| `unnamed-link.html` | 1 | `link-name` | 1 |
+| Page | Violations | Rule | Nodes | WCAG SC | EN 301 549 |
+|---|---|---|---|---|---|
+| `clean.html` | 0 | — | — | — | — |
+| `contrast.html` | 1 | `color-contrast` | 1 | 1.4.3 | 9.1.4.3 |
+| `missing-alt.html` | 1 | `image-alt` | 1 | 1.1.1 | 9.1.1.1 |
+| `missing-label.html` | 1 | `label` | 1 | 4.1.2 | 9.4.1.2 |
+| `missing-lang.html` | 1 | `html-has-lang` | 1 | 3.1.1 | 9.3.1.1 |
+| `unnamed-link.html` | 1 | `link-name` | 1 | 2.4.4, 4.1.2 | 9.2.4.4, 9.4.1.2 |
 
 Total across the fixture site: **6 pages, 5 violations, 0 `incomplete` results.**
+
+The WCAG SC and EN 301 549 columns are read straight from each axe rule's
+`tags` (`wcag143` → SC 1.4.3, `EN-9.1.4.3` → clause 9.1.4.3), not authored by
+hand — see `src/report/clauses.ts` and ADR 0004. `src/scan/scan.e2e.test.ts`
+asserts them alongside the rule and node counts.
 
 ## Why these five rules, not "heading order"
 
