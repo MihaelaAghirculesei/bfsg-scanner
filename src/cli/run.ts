@@ -1,6 +1,14 @@
+import { type Browser, chromium } from 'playwright';
 import { type Config, ConfigError, loadConfig } from '../config/index.js';
 import { discoverSite } from '../discovery/index.js';
-import { buildReport, renderHtmlReport, writeHtmlReport, writeReport } from '../report/index.js';
+import {
+  buildReport,
+  renderHtmlReport,
+  renderPdfReport,
+  writeHtmlReport,
+  writePdfReport,
+  writeReport,
+} from '../report/index.js';
 import { type ScanDeps, scan } from '../scan/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
@@ -63,7 +71,26 @@ export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise
   }
   console.log(`Discovered ${urls.length} page(s) to scan.`);
 
-  const result = await scan(urls, { wcagTags: config.wcagTags }, deps);
+  // One Chromium for the whole run: the scan uses it, and the PDF report is
+  // printed with it. `run` closes only a browser it launched itself, so an
+  // injected one (tests) is left to its owner — the same contract `scan` keeps.
+  const browser = deps.browser ?? (await chromium.launch());
+  const launchedHere = deps.browser === undefined;
+  try {
+    return await scanAndReport(config, urls, browser);
+  } finally {
+    if (launchedHere) {
+      await browser.close();
+    }
+  }
+}
+
+async function scanAndReport(
+  config: Config,
+  urls: readonly string[],
+  browser: Browser,
+): Promise<number> {
+  const result = await scan(urls, { wcagTags: config.wcagTags }, { browser });
 
   const report = buildReport(result, {
     baseUrl: config.baseUrl,
@@ -72,11 +99,11 @@ export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise
   });
   const reportPath = await writeReport(report, config.outputDir);
   console.log(`Report written to ${reportPath}`);
-  const htmlPath = await writeHtmlReport(
-    renderHtmlReport(report, config.reportLanguage),
-    config.outputDir,
-  );
+  const html = renderHtmlReport(report, config.reportLanguage);
+  const htmlPath = await writeHtmlReport(html, config.outputDir);
   console.log(`HTML report written to ${htmlPath}`);
+  const pdfPath = await writePdfReport(await renderPdfReport(html, browser), config.outputDir);
+  console.log(`PDF report written to ${pdfPath}`);
 
   const failedPages = result.pages.filter((page) => page.status === 'error');
   if (failedPages.length > 0) {
