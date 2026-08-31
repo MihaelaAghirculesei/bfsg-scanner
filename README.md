@@ -131,10 +131,10 @@ The terminal prints a summary and the distinct breached clauses.
 axe-core's rule metadata already carries the mapping: a rule tagged
 `wcag143` checks WCAG SC 1.4.3, `EN-9.1.4.3` maps it to that EN 301 549
 clause. The scanner reads those tags rather than maintaining a hand-authored
-table. For web content the BFSG (§ 3 (1), § 4) grants a presumption of
-conformity to sites meeting EN 301 549, whose Chapter 9 is WCAG 2.1 A/AA, so
-the EN 301 549 clauses in the report are the BFSG-relevant citations. This is
-not legal advice.
+table. § 4 BFSG presumes conformity for content that meets the relevant
+harmonised standard — for the web, EN 301 549, whose Chapter 9 references
+WCAG 2.1 level A/AA — so the EN 301 549 clauses in the report are the
+corresponding citations. This is not legal advice.
 
 ## Responsible use
 

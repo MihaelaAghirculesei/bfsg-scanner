@@ -89,7 +89,7 @@ const EN: Messages = {
   breachedEn301549: 'EN 301 549 clauses',
   noClausesBreached: 'No WCAG or EN 301 549 clauses were breached by a confirmed violation.',
   clausesLegalNote:
-    'For web content the BFSG (§ 3 (1), § 4) grants a presumption of conformity to sites meeting EN 301 549, whose Chapter 9 is WCAG 2.1 A/AA. The clauses above are the BFSG-relevant citations.',
+    '§ 4 BFSG presumes conformity for content that meets the relevant harmonised standard — for the web, EN 301 549, whose Chapter 9 references WCAG 2.1 level A/AA. The clauses above are the corresponding citations. This is not legal advice.',
 
   findingsHeading: 'Findings by page',
   pageScanFailed: 'This page could not be scanned',
@@ -137,14 +137,14 @@ const DE: Messages = {
   noClausesBreached:
     'Kein WCAG- oder EN-301-549-Kriterium wurde durch einen bestätigten Verstoß verletzt.',
   clausesLegalNote:
-    'Für Webinhalte begründet das BFSG (§ 3 Abs. 1, § 4) eine Konformitätsvermutung für Angebote, die EN 301 549 erfüllen; deren Kapitel 9 entspricht WCAG 2.1 A/AA. Die oben genannten Anforderungen sind die BFSG-relevanten Fundstellen.',
+    '§ 4 BFSG begründet eine Konformitätsvermutung für Angebote, die die einschlägige harmonisierte Norm erfüllen — für das Web ist das EN 301 549, deren Kapitel 9 auf WCAG 2.1 (Stufen A/AA) verweist. Die oben genannten Anforderungen sind die entsprechenden Fundstellen. Dies ist keine Rechtsberatung.',
 
   findingsHeading: 'Ergebnisse nach Seite',
   pageScanFailed: 'Diese Seite konnte nicht geprüft werden',
   noViolations: 'Keine Verstöße.',
   rule: 'Regel',
   impact: 'Schweregrad',
-  successCriteria: 'WCAG-EK',
+  successCriteria: 'WCAG SC',
   en301549Clauses: 'EN 301 549',
   help: 'Behebung',
   affectedElements: 'Betroffene Elemente',
