@@ -62,8 +62,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await browser.close();
+  // Concurrently, and tolerant of a slow or failing shutdown under load.
+  await Promise.allSettled([server.close(), browser.close()]);
 });
 
 describe('scan (golden fixture site)', () => {
