@@ -36,7 +36,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "schema"
+    "schema",
+    "docs"
   ],
   "scripts": {
     "prepare": "git config core.hooksPath .githooks",
