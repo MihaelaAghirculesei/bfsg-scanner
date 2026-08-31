@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
 import type { ImpactValue } from 'axe-core';
 import { SCHEMA_VERSION } from '../index.js';
 import type { ScanFinding, ScanResult } from '../scan/index.js';
+import { toolInfo } from '../shared/index.js';
 import { clausesFor, compareDotted } from './clauses.js';
 import type {
   Report,
@@ -32,7 +32,7 @@ export function buildReport(
   target: ReportTarget,
   options: BuildReportOptions = {},
 ): Report {
-  const { generatedAt = new Date(), tool = readToolInfo() } = options;
+  const { generatedAt = new Date(), tool = toolInfo() } = options;
   const pages = scanResult.pages.map(enrichPage);
   const summary = summarise(pages);
 
@@ -129,12 +129,4 @@ function impactBucket(impact: ImpactValue): keyof ReportImpactCounts {
     default:
       return 'unknown';
   }
-}
-
-function readToolInfo(): ReportToolInfo {
-  const pkg = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as {
-    name?: string;
-    version?: string;
-  };
-  return { name: pkg.name ?? 'bfsg-scanner', version: pkg.version ?? '0.0.0' };
 }

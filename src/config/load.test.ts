@@ -34,6 +34,7 @@ describe('loadConfig', () => {
       outputDir: 'reports',
       failOn: 'serious',
       reportLanguage: 'de',
+      reportFormats: ['json', 'html', 'pdf'],
     });
   });
 
@@ -46,6 +47,7 @@ excludePaths: ["/impressum", "/datenschutz"]
 outputDir: out
 failOn: critical
 reportLanguage: en
+reportFormats: [json]
 `);
 
     const config = loadConfig(path);
@@ -56,6 +58,16 @@ reportLanguage: en
     expect(config.outputDir).toBe('out');
     expect(config.failOn).toBe('critical');
     expect(config.reportLanguage).toBe('en');
+    expect(config.reportFormats).toEqual(['json']);
+  });
+
+  it('rejects an unknown report format and an empty format list', () => {
+    expect(() =>
+      loadConfig(writeConfig('baseUrl: https://example.de\nreportFormats: [json, xml]\n')),
+    ).toThrow(/reportFormats/);
+    expect(() =>
+      loadConfig(writeConfig('baseUrl: https://example.de\nreportFormats: []\n')),
+    ).toThrow(/reportFormats/);
   });
 
   it('rejects a config missing the required baseUrl', () => {

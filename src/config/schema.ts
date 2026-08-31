@@ -1,10 +1,12 @@
 import { z } from 'zod';
 
-const wcagTagSchema = z.enum(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']);
+export const wcagTagSchema = z.enum(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']);
 
-const failOnSchema = z.enum(['critical', 'serious', 'moderate', 'minor']);
+export const failOnSchema = z.enum(['critical', 'serious', 'moderate', 'minor']);
 
-const reportLanguageSchema = z.enum(['de', 'en']);
+export const reportLanguageSchema = z.enum(['de', 'en']);
+
+export const reportFormatSchema = z.enum(['json', 'html', 'pdf']);
 
 export const configSchema = z.strictObject({
   baseUrl: z.url(),
@@ -14,6 +16,8 @@ export const configSchema = z.strictObject({
   outputDir: z.string().min(1).default('reports'),
   failOn: failOnSchema.default('serious'),
   reportLanguage: reportLanguageSchema.default('de'),
+  reportFormats: z.array(reportFormatSchema).min(1).default(['json', 'html', 'pdf']),
 });
 
 export type Config = z.infer<typeof configSchema>;
+export type ReportFormat = z.infer<typeof reportFormatSchema>;

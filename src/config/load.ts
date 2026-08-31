@@ -10,6 +10,20 @@ export class ConfigError extends Error {
   }
 }
 
+/**
+ * Validates an already-parsed config object against the schema, applying
+ * defaults. Throws {@link ConfigError} with all issues listed on failure.
+ * `source` names where the object came from, for the error message
+ * (e.g. a quoted file path, or "command-line arguments").
+ */
+export function parseConfig(raw: unknown, source: string): Config {
+  const result = configSchema.safeParse(raw);
+  if (!result.success) {
+    throw new ConfigError(formatIssues(source, result.error));
+  }
+  return result.data;
+}
+
 export function loadConfig(path: string): Config {
   let raw: string;
   try {
@@ -25,18 +39,13 @@ export function loadConfig(path: string): Config {
     throw new ConfigError(`Cannot parse "${path}" as YAML: ${(cause as Error).message}`);
   }
 
-  const result = configSchema.safeParse(parsed);
-  if (!result.success) {
-    throw new ConfigError(formatIssues(path, result.error));
-  }
-
-  return result.data;
+  return parseConfig(parsed, `"${path}"`);
 }
 
-function formatIssues(path: string, error: z.ZodError): string {
+function formatIssues(source: string, error: z.ZodError): string {
   const lines = error.issues.map((issue) => {
     const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
     return `  - ${field}: ${issue.message}`;
   });
-  return `Invalid config at "${path}":\n${lines.join('\n')}`;
+  return `Invalid config (${source}):\n${lines.join('\n')}`;
 }
