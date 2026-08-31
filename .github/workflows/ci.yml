@@ -47,3 +47,6 @@ jobs:
 
       - name: Verify (typecheck, lint, test)
         run: npm run verify
+
+      - name: Build the publishable dist
+        run: npm run build

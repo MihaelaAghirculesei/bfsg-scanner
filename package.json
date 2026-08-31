@@ -2,21 +2,53 @@
   "name": "bfsg-scanner",
   "version": "0.0.0",
   "description": "WCAG 2.1 AA / BFSG compliance scanner built on Playwright and axe-core",
-  "type": "module",
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "wcag2",
+    "en-301-549",
+    "bfsg",
+    "axe-core",
+    "playwright",
+    "accessibility-testing",
+    "compliance",
+    "cli"
+  ],
+  "homepage": "https://github.com/MihaelaAghirculesei/bfsg-scanner#readme",
+  "bugs": {
+    "url": "https://github.com/MihaelaAghirculesei/bfsg-scanner/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MihaelaAghirculesei/bfsg-scanner.git"
+  },
   "license": "MIT",
+  "author": "Mihaela Aghirculesei",
+  "type": "module",
   "engines": {
     "node": ">=24.0.0"
   },
+  "bin": {
+    "bfsg-scanner": "dist/cli/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "git config core.hooksPath .githooks",
-    "build": "tsc",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
     "cli": "tsx src/cli/index.ts",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run typecheck && npm run lint && npm run test"
+    "verify": "npm run typecheck && npm run lint && npm run test",
+    "prepublishOnly": "npm run verify && npm run build"
   },
   "dependencies": {
     "@axe-core/playwright": "4.13.0",
@@ -29,6 +61,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.10",
     "@types/node": "24.9.2",
+    "rimraf": "6.0.1",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "4.1.11"
