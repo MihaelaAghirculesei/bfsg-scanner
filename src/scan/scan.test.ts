@@ -8,6 +8,10 @@ import { scan } from './scan.js';
 // One browser for the whole file: scan() accepts an injected browser and
 // will not close it, so every test here shares a single Chromium launch
 // instead of paying for one each. Contexts stay per-page and isolated.
+//
+// Every test drives real page navigations. Their own nav timeouts and rate
+// limits bound them to a second or two; the 30s per-test ceilings only
+// matter when the machine is starved and browser contexts are slow to open.
 let browser: Browser;
 
 beforeAll(async () => {
@@ -15,7 +19,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await browser.close();
+  // Tolerant of a slow or failing shutdown under load.
+  await Promise.allSettled([browser.close()]);
 });
 
 /** A TCP server that accepts and immediately kills every connection, so
@@ -44,23 +49,18 @@ function startFlakyServer(): Promise<{
   });
 }
 
-type DelayEvent = 'start' | 'end';
-
-/** Serves a minimal valid page after `delayMs`, reporting request
- * start/end timestamps via `onEvent` so a test can prove two servers'
- * requests overlapped in time — a direct proof of concurrency, immune to
- * the wall-clock flakiness of comparing absolute durations. */
-function startDelayedHtmlServer(
-  delayMs: number,
-  onEvent: (event: DelayEvent) => void,
+/** Serves one minimal valid HTML page. `beforeRespond`, if given, is
+ * awaited before the response is written, so a test can use it as a
+ * barrier — proving two requests were in flight at once without timing
+ * assertions. */
+function startHtmlServer(
+  beforeRespond: () => unknown = () => undefined,
 ): Promise<{ url: string; close: () => Promise<void> }> {
   const server: HttpServer = createHttpServer((_req, res) => {
-    onEvent('start');
-    setTimeout(() => {
+    Promise.resolve(beforeRespond()).then(() => {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end('<!DOCTYPE html><html lang="en"><head><title>t</title></head><body></body></html>');
-      onEvent('end');
-    }, delayMs);
+    });
   });
   return new Promise((resolvePromise) => {
     server.listen(0, '127.0.0.1', () => {
@@ -89,7 +89,7 @@ describe('scan', () => {
     } finally {
       await flaky.close();
     }
-  }, 15_000);
+  }, 30_000);
 
   it('retries once by default before giving up', async () => {
     const flaky = await startFlakyServer();
@@ -105,7 +105,7 @@ describe('scan', () => {
     } finally {
       await flaky.close();
     }
-  }, 20_000);
+  }, 30_000);
 
   it('fails a page that never finishes loading within the timeout', async () => {
     const openSockets = new Set<Socket>();
@@ -136,17 +136,23 @@ describe('scan', () => {
       }
       await new Promise<void>((resolvePromise) => hanging.close(() => resolvePromise()));
     }
-  }, 15_000);
+  }, 30_000);
 
   it('scans different hosts concurrently, not sequentially', async () => {
-    const events: { server: 'A' | 'B'; event: DelayEvent; at: number }[] = [];
-    const delayMs = 400;
-    const serverA = await startDelayedHtmlServer(delayMs, (event) =>
-      events.push({ server: 'A', event, at: Date.now() }),
-    );
-    const serverB = await startDelayedHtmlServer(delayMs, (event) =>
-      events.push({ server: 'B', event, at: Date.now() }),
-    );
+    let markBRequested!: () => void;
+    const bRequested = new Promise<void>((resolvePromise) => {
+      markBRequested = resolvePromise;
+    });
+
+    // A holds its response until B has also been requested. With a
+    // concurrency of 2 both requests are in flight, so B unblocks A and
+    // both pages finish. A sequential scan would never request B while A
+    // is still pending, so A — and this test — would hang until the
+    // timeout. No wall-clock comparison, so machine load cannot flake it.
+    const serverA = await startHtmlServer(() => bRequested);
+    const serverB = await startHtmlServer(() => {
+      markBRequested();
+    });
 
     try {
       const result = await scan(
@@ -156,22 +162,15 @@ describe('scan', () => {
       );
 
       expect(result.pages.every((page) => page.status === 'ok')).toBe(true);
-
-      const aEnd = events.find((e) => e.server === 'A' && e.event === 'end')?.at;
-      const bStart = events.find((e) => e.server === 'B' && e.event === 'start')?.at;
-      expect(aEnd).toBeDefined();
-      expect(bStart).toBeDefined();
-      // B's request started before A's finished: their requests overlapped.
-      expect(bStart as number).toBeLessThan(aEnd as number);
     } finally {
       await serverA.close();
       await serverB.close();
     }
-  }, 20_000);
+  }, 30_000);
 
   it('serializes requests to the same host even with concurrency > 1', async () => {
     const rateLimitMs = 500;
-    const server = await startDelayedHtmlServer(0, () => undefined);
+    const server = await startHtmlServer();
 
     try {
       const start = Date.now();
@@ -189,7 +188,7 @@ describe('scan', () => {
     } finally {
       await server.close();
     }
-  }, 20_000);
+  }, 30_000);
 
   it('sends the identifiable User-Agent on the actual browser navigation', async () => {
     let receivedUserAgent: string | undefined;
@@ -214,5 +213,5 @@ describe('scan', () => {
     } finally {
       await new Promise<void>((resolvePromise) => server.close(() => resolvePromise()));
     }
-  }, 15_000);
+  }, 30_000);
 });

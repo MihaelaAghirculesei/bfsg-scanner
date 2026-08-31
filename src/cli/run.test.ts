@@ -19,8 +19,9 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await server.close();
-  await browser.close();
+  // Concurrently, and tolerant of a slow or failing shutdown: a teardown
+  // hiccup on a loaded machine must not fail an otherwise-green suite.
+  await Promise.allSettled([server.close(), browser.close()]);
 });
 
 // Every run() here shares the one browser above; run() forwards it to
