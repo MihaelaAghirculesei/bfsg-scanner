@@ -17,8 +17,15 @@ wcagTags:
 # Paths excluded from crawling (glob-style, matched against the URL path).
 excludePaths: []
 
-# Directory the JSON/HTML/PDF reports are written to.
+# Directory the report files are written to.
 outputDir: reports
+
+# Which report files to write. Any non-empty subset of: json | html | pdf
+# Override on the CLI with --format json,html,pdf
+reportFormats:
+  - json
+  - html
+  - pdf
 
 # Minimum severity that causes the scan to exit 1.
 # One of: critical | serious | moderate | minor

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -202,5 +202,106 @@ describe('run', () => {
       await blockedServer.close();
       rmSync(blockedDir, { recursive: true, force: true });
     }
+  }, 30_000);
+});
+
+describe('run — CLI arguments', () => {
+  it('prints usage for --help / -h and exits 0 without scanning', async () => {
+    for (const flag of ['--help', '-h']) {
+      await expect(runCli([flag])).resolves.toBe(0);
+    }
+    const out = consoleOutput();
+    expect(out).toContain('Usage:');
+    expect(out).toContain('--fail-on');
+    expect(out).toContain('Exit codes:');
+  });
+
+  it('prints the name and version for --version / -V and exits 0', async () => {
+    await expect(runCli(['--version'])).resolves.toBe(0);
+    await expect(runCli(['-V'])).resolves.toBe(0);
+    expect(consoleOutput()).toMatch(/bfsg-scanner \d+\.\d+\.\d+/);
+  });
+
+  it('returns 2 on an unknown flag', async () => {
+    await expect(runCli(['--nope'])).resolves.toBe(2);
+  });
+
+  it('scans a positional URL with no config file involved', async () => {
+    await expect(runCli([`${server.url}/clean.html`, '--output-dir', dir])).resolves.toBe(0);
+
+    const report = readReport();
+    expect(report.target.baseUrl).toBe(`${server.url}/clean.html`);
+    expect(report.summary.pagesScanned).toBe(1);
+  }, 30_000);
+
+  it('returns 2 when a URL argument and --config are both given', async () => {
+    const path = writeConfig(`${server.url}/clean.html`);
+
+    await expect(runCli([`${server.url}/clean.html`, '--config', path])).resolves.toBe(2);
+  });
+
+  it('returns 2 when more than one URL argument is given', async () => {
+    await expect(runCli([`${server.url}/a`, `${server.url}/b`])).resolves.toBe(2);
+  });
+
+  it('lets --fail-on override the config threshold', async () => {
+    // contrast.html is one "serious" violation; the config would fail on it.
+    const path = writeConfig(`${server.url}/contrast.html`, 'failOn: serious\n');
+
+    await expect(runCli(['--config', path, '--fail-on', 'critical'])).resolves.toBe(0);
+    expect(readReport().verdict.passed).toBe(true);
+  }, 30_000);
+
+  it('returns 2 on an invalid --fail-on value', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--fail-on', 'nope', '--output-dir', dir]),
+    ).resolves.toBe(2);
+  });
+
+  it('lets --output-dir override the config directory', async () => {
+    const other = mkdtempSync(join(tmpdir(), 'bfsg-cli-out-'));
+    try {
+      const path = writeConfig(`${server.url}/clean.html`);
+
+      await expect(runCli(['--config', path, '--output-dir', other])).resolves.toBe(0);
+      expect(existsSync(join(other, 'report.json'))).toBe(true);
+      expect(existsSync(join(dir, 'report.json'))).toBe(false);
+    } finally {
+      rmSync(other, { recursive: true, force: true });
+    }
+  }, 30_000);
+
+  it('with --format json writes only the JSON report', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--format', 'json', '--output-dir', dir]),
+    ).resolves.toBe(0);
+
+    expect(existsSync(join(dir, 'report.json'))).toBe(true);
+    expect(existsSync(join(dir, 'report.html'))).toBe(false);
+    expect(existsSync(join(dir, 'report.pdf'))).toBe(false);
+  }, 30_000);
+
+  it('with --format html,pdf skips the JSON report', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--format', 'html,pdf', '--output-dir', dir]),
+    ).resolves.toBe(0);
+
+    expect(existsSync(join(dir, 'report.json'))).toBe(false);
+    expect(existsSync(join(dir, 'report.html'))).toBe(true);
+    expect(existsSync(join(dir, 'report.pdf'))).toBe(true);
+  }, 30_000);
+
+  it('returns 2 on an unknown --format value', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--format', 'json,xml', '--output-dir', dir]),
+    ).resolves.toBe(2);
+  });
+
+  it('lets --report-language pick the HTML language', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--report-language', 'en', '--output-dir', dir]),
+    ).resolves.toBe(0);
+
+    expect(readHtmlReport()).toContain('<html lang="en">');
   }, 30_000);
 });

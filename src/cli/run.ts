@@ -1,5 +1,6 @@
+import { parseArgs } from 'node:util';
 import { type Browser, chromium } from 'playwright';
-import { type Config, ConfigError, loadConfig } from '../config/index.js';
+import { type Config, ConfigError, loadConfig, parseConfig } from '../config/index.js';
 import { discoverSite } from '../discovery/index.js';
 import {
   buildReport,
@@ -10,48 +11,149 @@ import {
   writeReport,
 } from '../report/index.js';
 import { type ScanDeps, scan } from '../scan/index.js';
+import { toolInfo } from '../shared/index.js';
 
 const DEFAULT_CONFIG_PATH = 'bfsg.config.yaml';
+
+const HELP_TEXT = `bfsg-scanner — WCAG 2.1 AA / EN 301 549 / BFSG accessibility scanner
+
+Usage:
+  bfsg-scanner [url] [options]
+
+Arguments:
+  url                        Base URL to scan. Omit to load a config file instead.
+
+Options:
+  -c, --config <path>        YAML config file (default: ${DEFAULT_CONFIG_PATH}).
+                             Not allowed together with a url argument.
+      --fail-on <level>      critical | serious | moderate | minor (default: serious).
+      --report-language <l>  de | en (default: de).
+      --output-dir <dir>     Directory for the report files (default: reports).
+      --format <list>        Comma-separated subset of json,html,pdf (default: all three).
+  -h, --help                 Show this help and exit.
+  -V, --version              Print the version and exit.
+
+Exit codes:
+  0  scan completed, nothing at or above the fail-on threshold
+  1  scan completed, violations at or above fail-on
+  2  invalid arguments or configuration
+  3  no pages discovered, or a page could not be scanned
+`;
+
+interface CliArgs {
+  readonly help: boolean;
+  readonly version: boolean;
+  /** Explicit --config path, if given. */
+  readonly configPath?: string;
+  /** Positional base URL, if given. */
+  readonly url?: string;
+  /**
+   * Config fields overridden on the command line, still as raw values —
+   * `configSchema` is the single place they get validated.
+   */
+  readonly overrides: Record<string, unknown>;
+}
+
+const OPTIONS = {
+  help: { type: 'boolean', short: 'h' },
+  version: { type: 'boolean', short: 'V' },
+  config: { type: 'string', short: 'c' },
+  'fail-on': { type: 'string' },
+  'report-language': { type: 'string' },
+  'output-dir': { type: 'string' },
+  format: { type: 'string' },
+} as const;
+
+function safeParseArgs(argv: readonly string[]) {
+  try {
+    return parseArgs({ args: [...argv], options: OPTIONS, allowPositionals: true });
+  } catch (cause) {
+    throw new ConfigError((cause as Error).message);
+  }
+}
 
 /**
  * Exit code contract:
  *   0 - scan completed, nothing at or above the `failOn` threshold
  *   1 - scan completed, violations at or above `failOn` were found
- *   2 - invalid or missing configuration
+ *   2 - invalid arguments or configuration
  *   3 - no pages were discovered, or one or more pages could not be scanned
- *       (navigation/browser failure)
  *
  * 3 outranks 1: a run with unreachable pages scanned an incomplete site, so
  * "no violations found" would be a claim the data cannot support. The
- * report is still written first, so the partial results and the failure
- * entries survive either way.
+ * report is still written first, so partial results and failure entries
+ * survive either way.
  */
-export function parseArgs(argv: readonly string[]): { configPath: string } {
-  const flagIndex = argv.indexOf('--config');
-  if (flagIndex === -1) {
-    return { configPath: DEFAULT_CONFIG_PATH };
+export function parseCliArgs(argv: readonly string[]): CliArgs {
+  const { values, positionals } = safeParseArgs(argv);
+
+  if (positionals.length > 1) {
+    throw new ConfigError(`Expected at most one URL argument, got ${positionals.length}.`);
+  }
+  const url = positionals[0];
+  if (url !== undefined && values.config !== undefined) {
+    throw new ConfigError('Pass a URL argument or --config, not both.');
   }
 
-  const configPath = argv[flagIndex + 1];
-  if (!configPath) {
-    throw new ConfigError('--config flag requires a path argument');
+  const overrides: Record<string, unknown> = {};
+  if (values['fail-on'] !== undefined) {
+    overrides.failOn = values['fail-on'];
+  }
+  if (values['report-language'] !== undefined) {
+    overrides.reportLanguage = values['report-language'];
+  }
+  if (values['output-dir'] !== undefined) {
+    overrides.outputDir = values['output-dir'];
+  }
+  if (values.format !== undefined) {
+    overrides.reportFormats = values.format
+      .split(',')
+      .map((part) => part.trim())
+      .filter((part) => part.length > 0);
   }
 
-  return { configPath };
+  return {
+    help: values.help ?? false,
+    version: values.version ?? false,
+    overrides,
+    ...(values.config !== undefined ? { configPath: values.config } : {}),
+    ...(url !== undefined ? { url } : {}),
+  };
+}
+
+function resolveConfig(cli: CliArgs): Config {
+  if (cli.url !== undefined) {
+    return parseConfig({ baseUrl: cli.url, ...cli.overrides }, 'command-line arguments');
+  }
+  const fromFile = loadConfig(cli.configPath ?? DEFAULT_CONFIG_PATH);
+  if (Object.keys(cli.overrides).length === 0) {
+    return fromFile;
+  }
+  return parseConfig({ ...fromFile, ...cli.overrides }, 'command-line arguments');
 }
 
 export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise<number> {
-  let configPath: string;
+  let cli: CliArgs;
   try {
-    ({ configPath } = parseArgs(argv));
+    cli = parseCliArgs(argv);
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     return 2;
   }
 
+  if (cli.help) {
+    console.log(HELP_TEXT);
+    return 0;
+  }
+  if (cli.version) {
+    const { name, version } = toolInfo();
+    console.log(`${name} ${version}`);
+    return 0;
+  }
+
   let config: Config;
   try {
-    config = loadConfig(configPath);
+    config = resolveConfig(cli);
   } catch (error) {
     if (error instanceof ConfigError) {
       console.error(error.message);
@@ -97,13 +199,21 @@ async function scanAndReport(
     wcagTags: config.wcagTags,
     failOn: config.failOn,
   });
-  const reportPath = await writeReport(report, config.outputDir);
-  console.log(`Report written to ${reportPath}`);
-  const html = renderHtmlReport(report, config.reportLanguage);
-  const htmlPath = await writeHtmlReport(html, config.outputDir);
-  console.log(`HTML report written to ${htmlPath}`);
-  const pdfPath = await writePdfReport(await renderPdfReport(html, browser), config.outputDir);
-  console.log(`PDF report written to ${pdfPath}`);
+
+  const formats = new Set(config.reportFormats);
+  if (formats.has('json')) {
+    console.log(`Report written to ${await writeReport(report, config.outputDir)}`);
+  }
+  if (formats.has('html') || formats.has('pdf')) {
+    const html = renderHtmlReport(report, config.reportLanguage);
+    if (formats.has('html')) {
+      console.log(`HTML report written to ${await writeHtmlReport(html, config.outputDir)}`);
+    }
+    if (formats.has('pdf')) {
+      const pdf = await renderPdfReport(html, browser);
+      console.log(`PDF report written to ${await writePdfReport(pdf, config.outputDir)}`);
+    }
+  }
 
   const failedPages = result.pages.filter((page) => page.status === 'error');
   if (failedPages.length > 0) {
