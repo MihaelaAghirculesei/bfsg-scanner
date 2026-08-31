@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MihaelaAghirculesei/bfsg-scanner/schema/report.v1.json",
+  "title": "bfsg-scanner report",
+  "description": "The report.json a scan writes. schemaVersion 1. Any breaking change to this envelope bumps both this file (report.v2.json) and SCHEMA_VERSION.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "tool", "target", "summary", "verdict", "pages"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseUrl", "wcagTags", "failOn"],
+      "properties": {
+        "baseUrl": { "type": "string" },
+        "wcagTags": { "type": "array", "items": { "type": "string" } },
+        "failOn": { "enum": ["critical", "serious", "moderate", "minor"] }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pagesScanned",
+        "pagesFailed",
+        "pagesWithViolations",
+        "totalViolations",
+        "violationsByImpact",
+        "breachedSuccessCriteria",
+        "breachedEn301549Clauses"
+      ],
+      "properties": {
+        "pagesScanned": { "type": "integer", "minimum": 0 },
+        "pagesFailed": { "type": "integer", "minimum": 0 },
+        "pagesWithViolations": { "type": "integer", "minimum": 0 },
+        "totalViolations": { "type": "integer", "minimum": 0 },
+        "violationsByImpact": { "$ref": "#/$defs/impactCounts" },
+        "breachedSuccessCriteria": { "type": "array", "items": { "type": "string" } },
+        "breachedEn301549Clauses": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["violationsAtOrAboveThreshold", "unrankedViolations", "passed"],
+      "properties": {
+        "violationsAtOrAboveThreshold": { "type": "integer", "minimum": 0 },
+        "unrankedViolations": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "oneOf": [{ "$ref": "#/$defs/pageSuccess" }, { "$ref": "#/$defs/pageFailure" }]
+      }
+    }
+  },
+  "$defs": {
+    "impactCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "serious", "moderate", "minor", "unknown"],
+      "properties": {
+        "critical": { "type": "integer", "minimum": 0 },
+        "serious": { "type": "integer", "minimum": 0 },
+        "moderate": { "type": "integer", "minimum": 0 },
+        "minor": { "type": "integer", "minimum": 0 },
+        "unknown": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "pageSuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url", "violations", "incomplete"],
+      "properties": {
+        "status": { "const": "ok" },
+        "url": { "type": "string" },
+        "violations": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+        "incomplete": { "type": "array", "items": { "$ref": "#/$defs/finding" } }
+      }
+    },
+    "pageFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url", "error"],
+      "properties": {
+        "status": { "const": "error" },
+        "url": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "tags",
+        "impact",
+        "description",
+        "help",
+        "helpUrl",
+        "clauses",
+        "nodes"
+      ],
+      "properties": {
+        "ruleId": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "impact": {
+          "type": ["string", "null"],
+          "enum": ["critical", "serious", "moderate", "minor", null]
+        },
+        "description": { "type": "string" },
+        "help": { "type": "string" },
+        "helpUrl": { "type": "string" },
+        "clauses": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["wcagSc", "en301549"],
+          "properties": {
+            "wcagSc": { "type": "array", "items": { "type": "string" } },
+            "en301549": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "html", "failureSummary"],
+      "properties": {
+        "target": {
+          "type": "array",
+          "items": {
+            "type": ["string", "array"],
+            "items": { "type": "string" }
+          }
+        },
+        "html": { "type": "string" },
+        "failureSummary": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
