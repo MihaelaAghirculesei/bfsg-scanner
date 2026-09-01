@@ -1,6 +1,6 @@
 {
   "name": "bfsg-scanner",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "WCAG 2.1 AA / BFSG compliance scanner built on Playwright and axe-core",
   "keywords": [
     "accessibility",
@@ -37,10 +37,11 @@
   "files": [
     "dist",
     "schema",
-    "docs"
+    "docs",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "prepare": "git config core.hooksPath .githooks",
+    "prepare": "git config core.hooksPath .githooks || exit 0",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "cli": "tsx src/cli/index.ts",
@@ -63,7 +64,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.10",
     "@types/node": "24.9.2",
-    "ajv": "8.17.1",
+    "ajv": "8.20.0",
     "rimraf": "6.0.1",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
