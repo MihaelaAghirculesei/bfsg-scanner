@@ -205,9 +205,11 @@ const STYLE = `
   dl.meta > div { display: contents; }
   dl.meta dt { font-weight: 600; }
   dl.meta dd { margin: 0; word-break: break-word; }
+  /* Tints, not solid fills, so the banner reads on a light or a dark ground;
+     the saturated border and the bold headline carry the pass/fail signal. */
   .banner { margin: 1rem 0; padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid; }
-  .banner.pass { background: #e6f4ea; border-color: #1e7e34; color: #14532d; }
-  .banner.fail { background: #fdecea; border-color: #b02a37; color: #7a1620; }
+  .banner.pass { background: rgba(30, 126, 52, 0.14); border-color: #1e7e34; }
+  .banner.fail { background: rgba(176, 42, 55, 0.16); border-color: #b02a37; }
   .banner p { margin: 0.15rem 0; }
   .banner .unranked { font-size: 0.9rem; }
   ul.impacts { list-style: none; padding: 0; margin: 0.35rem 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -226,5 +228,10 @@ const STYLE = `
   pre.node { overflow-x: auto; padding: 0.5rem 0.7rem; background: rgba(127,127,127,0.12); border-radius: 4px; }
   .node-summary { white-space: pre-wrap; font-size: 0.9rem; margin: 0.15rem 0 0.6rem; }
   .scan-failed code { color: #b02a37; }
-  @media print { body { max-width: none; } .finding { break-inside: avoid; } }
+  @media print {
+    body { max-width: none; }
+    .finding { break-inside: avoid; }
+    /* No horizontal scroll on paper: wrap the evidence markup instead of clipping it. */
+    pre.node { white-space: pre-wrap; overflow-wrap: anywhere; }
+  }
 `;
