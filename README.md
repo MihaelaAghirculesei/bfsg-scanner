@@ -145,6 +145,27 @@ The terminal prints a summary and the distinct breached clauses.
 `3` outranks `1`: a run with unreachable pages scanned an incomplete site, so
 "no violations found" would be a claim the data cannot support.
 
+## Use in CI
+
+The non-zero exit at or above `--fail-on` lets a CI job block a merge on
+accessibility. A GitHub Actions step:
+
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: 24
+- run: npx playwright install --with-deps chromium
+- run: npx bfsg-scanner https://staging.example.de --fail-on serious
+- if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: accessibility-report
+    path: reports/
+```
+
+`--fail-on serious` fails the step on any `serious` or `critical` finding;
+`if: always()` keeps the report even on a failing run.
+
 ## How the clause mapping works
 
 axe-core's rule metadata already carries the mapping: a rule tagged
