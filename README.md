@@ -7,8 +7,7 @@ Every finding is mapped to the clause it breaches in
 through it, Germany's [BFSG](https://www.gesetze-im-internet.de/bfsg/) — so a
 run produces a citeable compliance report, not just a list of rule IDs.
 
-> Status: pre-release. The CLI and the report format are stable and covered by
-> tests; not yet published to npm (see [Install from source](#install-from-source)).
+Requires **Node.js ≥ 24**.
 
 ## What it does
 
@@ -25,7 +24,6 @@ run produces a citeable compliance report, not just a list of rule IDs.
 ## Quick start
 
 ```sh
-# after the first npm release:
 npx bfsg-scanner https://example.de
 
 # scan one page, JSON only, fail the process on any "critical" finding:
@@ -38,9 +36,9 @@ The first run needs a Chromium build for Playwright:
 npx playwright install chromium
 ```
 
-## Install from source
+Install it for repeated use with `npm i -g bfsg-scanner`.
 
-Requires **Node.js ≥ 24**.
+## From source
 
 ```sh
 git clone https://github.com/MihaelaAghirculesei/bfsg-scanner.git
@@ -48,10 +46,8 @@ cd bfsg-scanner
 npm install
 npx playwright install chromium
 npm run build
-node dist/cli/index.js --help
+node dist/cli/index.js --help   # or `npm link` for the bfsg-scanner command
 ```
-
-`npm link` makes the `bfsg-scanner` command available on your PATH.
 
 ## Usage
 

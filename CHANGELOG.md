@@ -2,12 +2,15 @@
 
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
-aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-from its first release onward.
+follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Everything below is on `main` but not yet cut as a versioned release.
+Nothing yet.
+
+## [0.1.0] - 2026-09-01
+
+First release.
 
 ### Added
 
@@ -32,4 +35,5 @@ Everything below is on `main` but not yet cut as a versioned release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/commits/main
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/releases/tag/v0.1.0
