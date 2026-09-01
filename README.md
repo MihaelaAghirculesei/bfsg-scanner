@@ -182,6 +182,16 @@ This tool sends real traffic to whatever site you point it at. Scan only
 sites you own or are authorised to test. See
 [`docs/SCANNING-ETHICS.md`](./docs/SCANNING-ETHICS.md).
 
+## Not in scope (yet)
+
+Deliberate omissions for 0.1, not oversights:
+
+- per-rule waivers / ignore lists
+- a baseline and run-to-run diff
+- scanning behind authentication
+- multi-site batch runs
+- GitHub Actions `::error::` annotations
+
 ## Design decisions
 
 Each significant choice is recorded as an ADR in [`docs/adr/`](./docs/adr).
