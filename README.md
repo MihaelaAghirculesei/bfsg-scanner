@@ -1,5 +1,11 @@
 # bfsg-scanner
 
+[![npm](https://img.shields.io/npm/v/bfsg-scanner?logo=npm)](https://www.npmjs.com/package/bfsg-scanner)
+[![CI](https://github.com/MihaelaAghirculesei/bfsg-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/MihaelaAghirculesei/bfsg-scanner/actions/workflows/ci.yml)
+[![npm provenance](https://img.shields.io/badge/npm-provenance-blue?logo=npm)](https://www.npmjs.com/package/bfsg-scanner#provenance)
+[![node](https://img.shields.io/node/v/bfsg-scanner)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/bfsg-scanner)](./LICENSE)
+
 Automated **WCAG 2.1 AA** accessibility scanning for a whole site, built on
 [Playwright](https://playwright.dev) and [axe-core](https://github.com/dequelabs/axe-core).
 Every finding is mapped to the clause it breaches in
@@ -8,6 +14,18 @@ through it, Germany's [BFSG](https://www.gesetze-im-internet.de/bfsg/) — so a
 run produces a citeable compliance report, not just a list of rule IDs.
 
 Requires **Node.js ≥ 24**.
+
+## Sample report
+
+A real run against the [W3C WAI Before/After Demonstration](https://www.w3.org/WAI/demos/bad/)
+(the W3C's deliberately inaccessible example site):
+
+[**▶ Open the rendered report**](https://mihaelaaghirculesei.github.io/bfsg-scanner/) ·
+[HTML](./examples/report.html) ·
+[JSON](./examples/report.json) ·
+[PDF](./examples/report.pdf)
+
+[![Sample report](./examples/report-screenshot.png)](https://mihaelaaghirculesei.github.io/bfsg-scanner/)
 
 ## What it does
 
