@@ -1,8 +1,12 @@
 name: Release
 
-# Publishes to npm when a v* tag is pushed. One-time setup by the repo owner:
-# add an automation NPM_TOKEN as a repository secret. Then a release is:
-#   (merge the version-bump PR) → git tag v0.1.0 && git push --tags
+# Publishes to npm on a v* tag push via OIDC trusted publishing — no token.
+#
+# One-time setup on npmjs.com: bfsg-scanner -> Settings -> Trusted Publishing,
+# add { user: MihaelaAghirculesei, repo: bfsg-scanner, workflow: release.yml }.
+#
+# A release is then: merge the version-bump PR, then
+#   git tag vX.Y.Z && git push origin vX.Y.Z
 # The tag must match package.json "version" or this job fails before publishing.
 
 on:
@@ -11,7 +15,7 @@ on:
 
 permissions:
   contents: write # create the GitHub Release
-  id-token: write # npm provenance
+  id-token: write # OIDC auth to npm; provenance is then automatic
 
 jobs:
   publish:
@@ -28,6 +32,9 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
+
+      - name: Use an npm that supports OIDC trusted publishing
+        run: npm install -g npm@latest
 
       - name: Check the tag matches package.json
         shell: bash
@@ -46,9 +53,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
 
       - name: Create the GitHub Release
         run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
