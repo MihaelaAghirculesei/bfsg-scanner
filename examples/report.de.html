@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bericht zur Barrierefreiheitsprüfung — https://www.w3.org/WAI/demos/bad/before/</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; max-width: 60rem; padding: 2rem 1.25rem;
+    font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  h1 { font-size: 1.6rem; margin: 0 0 1rem; }
+  h2 { font-size: 1.25rem; margin: 2rem 0 0.75rem; border-bottom: 1px solid; padding-bottom: 0.25rem; }
+  h3 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; word-break: break-all; }
+  h4 { font-size: 0.95rem; margin: 1rem 0 0.35rem; }
+  a { color: inherit; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
+  dl.meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 1rem; margin: 0.5rem 0; }
+  dl.meta > div { display: contents; }
+  dl.meta dt { font-weight: 600; }
+  dl.meta dd { margin: 0; word-break: break-word; }
+  /* Tints, not solid fills, so the banner reads on a light or a dark ground;
+     the saturated border and the bold headline carry the pass/fail signal. */
+  .banner { margin: 1rem 0; padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid; }
+  .banner.pass { background: rgba(30, 126, 52, 0.14); border-color: #1e7e34; }
+  .banner.fail { background: rgba(176, 42, 55, 0.16); border-color: #b02a37; }
+  .banner p { margin: 0.15rem 0; }
+  .banner .unranked { font-size: 0.9rem; }
+  ul.impacts { list-style: none; padding: 0; margin: 0.35rem 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  ul.impacts li { border: 1px solid; border-radius: 4px; padding: 0.2rem 0.55rem; }
+  ul.impacts li span { margin-right: 0.4rem; }
+  .clause-group span { font-weight: 600; margin-right: 0.5rem; }
+  code.chip { border: 1px solid; border-radius: 4px; padding: 0.1rem 0.4rem; display: inline-block; margin: 0.1rem 0; }
+  .legal { font-size: 0.9rem; opacity: 0.85; }
+  article.page { margin: 0.5rem 0 1.5rem; }
+  .finding { border-left: 4px solid #b02a37; padding: 0.5rem 0.9rem; margin: 0.75rem 0; background: rgba(127,127,127,0.06); }
+  .finding.impact-moderate, .finding.impact-minor { border-left-color: #b8860b; }
+  .finding.impact-unknown { border-left-color: #6c757d; }
+  .finding-head { margin: 0 0 0.35rem; display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
+  .badge { font-size: 0.8rem; border: 1px solid; border-radius: 4px; padding: 0.05rem 0.4rem; }
+  .finding-desc { margin: 0.25rem 0; }
+  pre.node { overflow-x: auto; padding: 0.5rem 0.7rem; background: rgba(127,127,127,0.12); border-radius: 4px; }
+  .node-summary { white-space: pre-wrap; font-size: 0.9rem; margin: 0.15rem 0 0.6rem; }
+  .scan-failed code { color: #b02a37; }
+  @media print {
+    body { max-width: none; }
+    .finding { break-inside: avoid; }
+    /* No horizontal scroll on paper: wrap the evidence markup instead of clipping it. */
+    pre.node { white-space: pre-wrap; overflow-wrap: anywhere; }
+  }
+</style>
+</head>
+<body>
+<section>
+    <h1>Bericht zur Barrierefreiheitsprüfung</h1>
+    <dl class="meta">
+      <div><dt>Ziel</dt><dd><a href="https://www.w3.org/WAI/demos/bad/before/">https://www.w3.org/WAI/demos/bad/before/</a></dd></div>
+      <div><dt>Erstellt am</dt><dd>2026-09-01T08:51:28.239Z</dd></div>
+      <div><dt>Werkzeug</dt><dd>bfsg-scanner 0.1.0</dd></div>
+      <div><dt>Regelsätze</dt><dd>wcag2a, wcag2aa, wcag21aa</dd></div>
+      <div><dt>Schwellenwert für Fehlschlag</dt><dd>serious</dd></div>
+    </dl>
+</section>
+<div class="banner fail"><p><strong>Nicht bestanden</strong> — 24 Verstoß/Verstöße auf oder über dem Schwellenwert</p></div>
+<section>
+    <h2>Zusammenfassung</h2>
+    <dl class="meta">
+      <div><dt>Geprüfte Seiten</dt><dd>5</dd></div>
+      <div><dt>Nicht ladbare Seiten</dt><dd>0</dd></div>
+      <div><dt>Seiten mit Verstößen</dt><dd>5</dd></div>
+      <div><dt>Verletzte Regeln (gesamt)</dt><dd>24</dd></div>
+    </dl>
+    <h3>Nach Schweregrad</h3>
+    <ul class="impacts">
+      <li><span>Kritisch</span><b>11</b></li>
+      <li><span>Schwerwiegend</span><b>13</b></li>
+      <li><span>Mittel</span><b>0</b></li>
+      <li><span>Gering</span><b>0</b></li>
+      <li><span>Ohne Bewertung</span><b>0</b></li>
+    </ul>
+</section>
+<section>
+    <h2>Verletzte Anforderungen</h2>
+    <p class="clause-group"><span>WCAG-2.1-Erfolgskriterien</span><code class="chip">1.1.1</code> <code class="chip">1.4.3</code> <code class="chip">2.4.4</code> <code class="chip">3.1.1</code> <code class="chip">4.1.2</code></p>
+    <p class="clause-group"><span>EN-301-549-Anforderungen</span><code class="chip">9.1.1.1</code> <code class="chip">9.1.4.3</code> <code class="chip">9.2.4.4</code> <code class="chip">9.3.1.1</code> <code class="chip">9.4.1.2</code></p>
+    <p class="legal">§ 4 BFSG begründet eine Konformitätsvermutung für Angebote, die die einschlägige harmonisierte Norm erfüllen — für das Web ist das EN 301 549, deren Kapitel 9 auf WCAG 2.1 (Stufen A/AA) verweist. Die oben genannten Anforderungen sind die entsprechenden Fundstellen. Dies ist keine Rechtsberatung.</p>
+</section>
+<section>
+    <h2>Ergebnisse nach Seite</h2>
+    <article class="page"><h3><a href="https://www.w3.org/WAI/demos/bad/before/home.html">https://www.w3.org/WAI/demos/bad/before/home.html</a></h3>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;b&gt;Free Penguins&lt;/b&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;b&gt;More City Parks&lt;/b&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>html-has-lang</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">&lt;html&gt; element must have a lang attribute</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>3.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.3.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright">https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;html&gt;</code></pre><p class="node-summary">Fix any of the following:
+  The &lt;html&gt; element does not have a lang attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>image-alt</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Images must have alternative text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright">https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>33</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;img src=&quot;./img/border_left_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_top.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_left.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_end.gif&quot; width=&quot;24px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_weather.gif&quot; width=&quot;128px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_start.gif&quot; width=&quot;22px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/mark.gif&quot; width=&quot;158px&quot; height=&quot;7px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;.img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; height=&quot;24&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; height=&quot;24&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; height=&quot;24&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1px&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/teaser_right1.jpg&quot; width=&quot;150px&quot; height=&quot;106px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/teaser_right2.jpg&quot; width=&quot;150px&quot; height=&quot;154px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_left.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_right.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>link-name</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Links must have discernible text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>2.4.4, 4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.2.4.4, 9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>7</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;home.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;news.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;tickets.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;survey.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;news.html&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/morearrow.gif&quot; width=&quot;48&quot; height=&quot;10&quot; alt=&quot;&quot; border=&quot;0&quot; onmouseover=&quot;this.src=&#39;./img/morearrow_a.gif&#39;&quot; onmouseout=&quot;this.src=&#39;./img/morearrow.gif&#39;&quot; style=&quot;vertical-align: bottom&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;news.html&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/morearrow.gif&quot; width=&quot;48&quot; height=&quot;10&quot; alt=&quot;&quot; border=&quot;0&quot; onmouseover=&quot;this.src=&#39;./img/morearrow_a.gif&#39;&quot; onmouseout=&quot;this.src=&#39;./img/morearrow.gif&#39;&quot; style=&quot;vertical-align: bottom&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;news.html&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/morearrow.gif&quot; width=&quot;48&quot; height=&quot;10&quot; alt=&quot;&quot; border=&quot;0&quot; onmouseover=&quot;this.src=&#39;./img/morearrow_a.gif&#39;&quot; onmouseout=&quot;this.src=&#39;./img/morearrow.gif&#39;&quot; style=&quot;vertical-align: bottom&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>select-name</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Select element must have an accessible name</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;select onchange=&quot;location.href = this.value;&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<h4>Manuelle Prüfung nötig</h4>
+<p class="note">axe konnte dies nicht automatisch entscheiden. Es wird nicht als Verstoß gezählt.</p>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a class=&quot;page current&quot;&gt;&lt;span class=&quot;hidden&quot;&gt;Inaccessible &lt;/span&gt;Home Page&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;a href=&quot;./annotated/home.html&quot; class=&quot;annotoggle&quot;&gt;Show &lt;br&gt;Annotations&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+  </div></article>
+<article class="page"><h3><a href="https://www.w3.org/WAI/demos/bad/before/news.html">https://www.w3.org/WAI/demos/bad/before/news.html</a></h3>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>html-has-lang</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">&lt;html&gt; element must have a lang attribute</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>3.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.3.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright">https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;html&gt;</code></pre><p class="node-summary">Fix any of the following:
+  The &lt;html&gt; element does not have a lang attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>image-alt</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Images must have alternative text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright">https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>39</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;img src=&quot;./img/border_left_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_top.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_left.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_end.gif&quot; width=&quot;24px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_weather.gif&quot; width=&quot;128px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_start.gif&quot; width=&quot;22px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/mark.gif&quot; width=&quot;158px&quot; height=&quot;7px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;.img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;24&quot; src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;24&quot; src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;30&quot; src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;24&quot; src=&quot;./img/headline_middle.gif&quot; width=&quot;23&quot; align=&quot;absmiddle&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img height=&quot;1&quot; src=&quot;./img/marker2_w.gif&quot; width=&quot;78&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_left.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_right.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>link-name</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Links must have discernible text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>2.4.4, 4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.2.4.4, 9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>4</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;home.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;news.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;tickets.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;survey.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>select-name</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Select element must have an accessible name</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;select onchange=&quot;location.href = this.value;&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<h4>Manuelle Prüfung nötig</h4>
+<p class="note">axe konnte dies nicht automatisch entscheiden. Es wird nicht als Verstoß gezählt.</p>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a class=&quot;page current&quot;&gt;&lt;span class=&quot;hidden&quot;&gt;Inaccessible &lt;/span&gt;News Page&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;a href=&quot;./annotated/news.html&quot; class=&quot;annotoggle&quot;&gt;Show &lt;br&gt;Annotations&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+  </div></article>
+<article class="page"><h3><a href="https://www.w3.org/WAI/demos/bad/before/tickets.html">https://www.w3.org/WAI/demos/bad/before/tickets.html</a></h3>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>8</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;Les Garçons&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 11.3pt (15px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;The Obelisks&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 11.3pt (15px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;ADULT&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;FS&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;RS&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;DC&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;ST&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;font color=&quot;41545D&quot;&gt;Group (5 or more)&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>html-has-lang</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">&lt;html&gt; element must have a lang attribute</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>3.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.3.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright">https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;html&gt;</code></pre><p class="node-summary">Fix any of the following:
+  The &lt;html&gt; element does not have a lang attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>image-alt</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Images must have alternative text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright">https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>26</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;img src=&quot;./img/border_left_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_top.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_left.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_end.gif&quot; width=&quot;24px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_weather.gif&quot; width=&quot;128px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_start.gif&quot; width=&quot;22px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/mark.gif&quot; width=&quot;158px&quot; height=&quot;7px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;.img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/headline_ticket_offers.gif&quot; border=&quot;0&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/headline_ticket_prices.gif&quot; border=&quot;0&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_left.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_right.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>link-name</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Links must have discernible text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>2.4.4, 4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.2.4.4, 9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>4</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;home.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;news.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;tickets.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;survey.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>select-name</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Select element must have an accessible name</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;select onchange=&quot;location.href = this.value;&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<h4>Manuelle Prüfung nötig</h4>
+<p class="note">axe konnte dies nicht automatisch entscheiden. Es wird nicht als Verstoß gezählt.</p>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>3</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a class=&quot;page current&quot;&gt;&lt;span class=&quot;hidden&quot;&gt;Inaccessible &lt;/span&gt;Tickets Page&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;a href=&quot;./annotated/tickets.html&quot; class=&quot;annotoggle&quot;&gt;Show &lt;br&gt;Annotations&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;font face=&quot;verdana&quot;&gt;Concession&lt;/font&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined because it&#39;s partially obscured by another element</p>
+  </div></article>
+<article class="page"><h3><a href="https://www.w3.org/WAI/demos/bad/before/survey.html">https://www.w3.org/WAI/demos/bad/before/survey.html</a></h3>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>html-has-lang</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">&lt;html&gt; element must have a lang attribute</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>3.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.3.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright">https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;html&gt;</code></pre><p class="node-summary">Fix any of the following:
+  The &lt;html&gt; element does not have a lang attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>image-alt</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Images must have alternative text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright">https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>24</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;img src=&quot;./img/border_left_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_top.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_left.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_end.gif&quot; width=&quot;24px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_weather.gif&quot; width=&quot;128px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_start.gif&quot; width=&quot;22px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/mark.gif&quot; width=&quot;158px&quot; height=&quot;7px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;.img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_left.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_right.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>label</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Form elements must have labels</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/label?application=playwright">https://dequeuniversity.com/rules/axe/4.13/label?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>11</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;1&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;2&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;3&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;4&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;5&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input class=&quot;align&quot; type=&quot;radio&quot; name=&quot;res&quot; value=&quot;6&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input type=&quot;radio&quot; name=&quot;t&quot; value=&quot;mr&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input type=&quot;radio&quot; name=&quot;t&quot; value=&quot;mrs&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input type=&quot;text&quot; name=&quot;em&quot; id=&quot;em&quot; size=&quot;20&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input type=&quot;text&quot; name=&quot;n&quot; id=&quot;n&quot; size=&quot;30&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;input type=&quot;text&quot; name=&quot;ev&quot; id=&quot;ev&quot; size=&quot;20&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>link-name</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Links must have discernible text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>2.4.4, 4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.2.4.4, 9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>4</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;home.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;news.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;tickets.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;survey.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>select-name</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Select element must have an accessible name</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;select onchange=&quot;location.href = this.value;&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;select name=&quot;cc&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<h4>Manuelle Prüfung nötig</h4>
+<p class="note">axe konnte dies nicht automatisch entscheiden. Es wird nicht als Verstoß gezählt.</p>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a class=&quot;page current&quot;&gt;&lt;span class=&quot;hidden&quot;&gt;Inaccessible &lt;/span&gt;Survey Page&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;a href=&quot;./annotated/survey.html&quot; class=&quot;annotoggle&quot;&gt;Show &lt;br&gt;Annotations&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+  </div></article>
+<article class="page"><h3><a href="https://www.w3.org/WAI/demos/bad/before/template.html">https://www.w3.org/WAI/demos/bad/before/template.html</a></h3>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;b&gt;[TITLE]&lt;/b&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+<pre class="node"><code>&lt;b&gt;[TITLE]&lt;/b&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element has insufficient color contrast of 3.88 (foreground color: #41545d, background color: #a9b8bf, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>html-has-lang</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">&lt;html&gt; element must have a lang attribute</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>3.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.3.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright">https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;html&gt;</code></pre><p class="node-summary">Fix any of the following:
+  The &lt;html&gt; element does not have a lang attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>image-alt</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Images must have alternative text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.1.1</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.1.1</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright">https://dequeuniversity.com/rules/axe/4.13/image-alt?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>28</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;img src=&quot;./img/border_left_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_top.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right_top.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_left.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_end.gif&quot; width=&quot;24px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_weather.gif&quot; width=&quot;128px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/top_logo_next_start.gif&quot; width=&quot;22px&quot; height=&quot;86px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/mark.gif&quot; width=&quot;158px&quot; height=&quot;7px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;.img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/blank_5x5.gif&quot; width=&quot;20px&quot; height=&quot;5px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_t.gif&quot; width=&quot;1px&quot; height=&quot;30px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/marker2_w.gif&quot; width=&quot;78px&quot; height=&quot;1px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_right.gif&quot; width=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_left.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom.gif&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+<pre class="node"><code>&lt;img src=&quot;./img/border_bottom_right.gif&quot; width=&quot;10px&quot; height=&quot;10px&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an alt attribute
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>link-name</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Links must have discernible text</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>2.4.4, 4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.2.4.4, 9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/link-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>4</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;home.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_home&quot; src=&quot;./img/nav_home.gif&quot; width=&quot;88&quot; height=&quot;27&quot; hspace=&quot;15&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;news.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_news.gif&quot; name=&quot;nav_news&quot; width=&quot;90&quot; height=&quot;21&quot; hspace=&quot;12&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;tickets.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img name=&quot;nav_facts&quot; src=&quot;./img/nav_facts.gif&quot; width=&quot;105&quot; height=&quot;23&quot; hspace=&quot;9&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+<pre class="node"><code>&lt;a href=&quot;javascript:location.href=&#39;survey.html&#39;;&quot; onfocus=&quot;blur();&quot;&gt;&lt;img src=&quot;./img/nav_survey.gif&quot; name=&quot;nav_survey&quot; width=&quot;107&quot; height=&quot;32&quot; hspace=&quot;8&quot; border=&quot;0px&quot;&gt;&lt;/a&gt;</code></pre><p class="node-summary">Fix all of the following:
+  Element is in tab order and does not have accessible text
+
+Fix any of the following:
+  Element does not have text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute</p>
+  </div>
+<div class="finding impact-critical">
+    <p class="finding-head">
+      <code>select-name</code>
+      <span class="badge">Schweregrad: critical</span>
+    </p>
+    <p class="finding-desc">Select element must have an accessible name</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>4.1.2</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.4.1.2</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright">https://dequeuniversity.com/rules/axe/4.13/select-name?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>1</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;select onchange=&quot;location.href = this.value;&quot;&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element does not have an implicit (wrapped) &lt;label&gt;
+  Element does not have an explicit &lt;label&gt;
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element&#39;s default semantics were not overridden with role=&quot;none&quot; or role=&quot;presentation&quot;</p>
+  </div>
+<h4>Manuelle Prüfung nötig</h4>
+<p class="note">axe konnte dies nicht automatisch entscheiden. Es wird nicht als Verstoß gezählt.</p>
+<div class="finding impact-serious">
+    <p class="finding-head">
+      <code>color-contrast</code>
+      <span class="badge">Schweregrad: serious</span>
+    </p>
+    <p class="finding-desc">Elements must meet minimum color contrast ratio thresholds</p>
+    <dl class="meta">
+      <div><dt>WCAG SC</dt><dd>1.4.3</dd></div>
+      <div><dt>EN 301 549</dt><dd>9.1.4.3</dd></div>
+      <div><dt>Behebung</dt><dd><a href="https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright">https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright</a></dd></div>
+      <div><dt>Betroffene Elemente</dt><dd>2</dd></div>
+    </dl>
+    <pre class="node"><code>&lt;a class=&quot;page current&quot;&gt;&lt;span class=&quot;hidden&quot;&gt;Inaccessible &lt;/span&gt;Template&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+<pre class="node"><code>&lt;a href=&quot;./annotated/template.html&quot; class=&quot;annotoggle&quot;&gt;Show &lt;br&gt;Annotations&lt;/a&gt;</code></pre><p class="node-summary">Fix any of the following:
+  Element&#39;s background color could not be determined due to a background image</p>
+  </div></article>
+</section>
+</body>
+</html>
