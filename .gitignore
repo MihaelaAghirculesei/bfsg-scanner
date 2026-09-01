@@ -3,6 +3,9 @@ dist/
 coverage/
 *.log
 
+# CI sets PLAYWRIGHT_BROWSERS_PATH here; never present in a normal local checkout
+.pw-browsers/
+
 # local environment / secrets
 .env
 .env.*
