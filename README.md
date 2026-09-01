@@ -6,26 +6,31 @@
 [![node](https://img.shields.io/node/v/bfsg-scanner)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/bfsg-scanner)](./LICENSE)
 
-Automated **WCAG 2.1 AA** accessibility scanning for a whole site, built on
-[Playwright](https://playwright.dev) and [axe-core](https://github.com/dequelabs/axe-core).
-Every finding is mapped to the clause it breaches in
-[EN 301 549](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/) and,
-through it, Germany's [BFSG](https://www.gesetze-im-internet.de/bfsg/) — so a
-run produces a citeable compliance report, not just a list of rule IDs.
+**Since 28 June 2025, Germany's [BFSG](https://www.gesetze-im-internet.de/bfsg/)
+has made digital accessibility a legal requirement for many consumer-facing
+businesses — online shops, banking, booking, ticketing and more.**
+`bfsg-scanner` scans a whole site for
+[WCAG 2.1 AA](https://www.w3.org/TR/WCAG21/) breaches and turns them into a
+citeable conformance report you can file as a record or use to gate a release.
+
+Built on [Playwright](https://playwright.dev) and
+[axe-core](https://github.com/dequelabs/axe-core). Every finding is mapped
+through [EN 301 549](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/)
+to the BFSG clause it breaches — not left as a bare rule ID.
 
 Requires **Node.js ≥ 24**.
 
-## Sample report
+> **How I use it:** a one-command accessibility audit of a client site before
+> launch. Pointed at the W3C's
+> [deliberately inaccessible demo](https://www.w3.org/WAI/demos/bad/), a run
+> flags **24 issues across 5 pages** — 11 critical, 13 serious — each tagged
+> with its WCAG success criterion and EN 301 549 clause, in one PDF for the file.
 
-A real run against the [W3C WAI Before/After Demonstration](https://www.w3.org/WAI/demos/bad/)
-(the W3C's deliberately inaccessible example site):
+[![Accessibility scan report](./examples/report-screenshot.png)](https://mihaelaaghirculesei.github.io/bfsg-scanner/)
 
-[**▶ Open the rendered report**](https://mihaelaaghirculesei.github.io/bfsg-scanner/) ·
-[HTML](./examples/report.html) ·
-[JSON](./examples/report.json) ·
-[PDF](./examples/report.pdf)
-
-[![Sample report](./examples/report-screenshot.png)](https://mihaelaaghirculesei.github.io/bfsg-scanner/)
+<sub>A real run against the W3C WAI Before/After Demonstration ·
+[open the rendered report](https://mihaelaaghirculesei.github.io/bfsg-scanner/) ·
+[HTML](./examples/report.html) · [JSON](./examples/report.json) · [PDF](./examples/report.pdf)</sub>
 
 ## What it does
 
@@ -140,6 +145,27 @@ The terminal prints a summary and the distinct breached clauses.
 `3` outranks `1`: a run with unreachable pages scanned an incomplete site, so
 "no violations found" would be a claim the data cannot support.
 
+## Use in CI
+
+The non-zero exit at or above `--fail-on` lets a CI job block a merge on
+accessibility. A GitHub Actions step:
+
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: 24
+- run: npx playwright install --with-deps chromium
+- run: npx bfsg-scanner https://staging.example.de --fail-on serious
+- if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: accessibility-report
+    path: reports/
+```
+
+`--fail-on serious` fails the step on any `serious` or `critical` finding;
+`if: always()` keeps the report even on a failing run.
+
 ## How the clause mapping works
 
 axe-core's rule metadata already carries the mapping: a rule tagged
@@ -155,6 +181,16 @@ corresponding citations. This is not legal advice.
 This tool sends real traffic to whatever site you point it at. Scan only
 sites you own or are authorised to test. See
 [`docs/SCANNING-ETHICS.md`](./docs/SCANNING-ETHICS.md).
+
+## Not in scope (yet)
+
+Deliberate omissions for 0.1, not oversights:
+
+- per-rule waivers / ignore lists
+- a baseline and run-to-run diff
+- scanning behind authentication
+- multi-site batch runs
+- GitHub Actions `::error::` annotations
 
 ## Design decisions
 
