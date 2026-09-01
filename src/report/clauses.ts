@@ -6,11 +6,10 @@
  * WCAG success criteria it checks (`wcag143` -> SC 1.4.3) and the matching
  * EN 301 549 clauses (`EN-9.1.4.3`). The scanner reads that mapping rather
  * than maintaining a hand-authored table (see ADR 0004). The German BFSG
- * adds no per-rule detail of its own: for web content it grants a
- * presumption of conformity (BFSG SS 3(1), SS 4) to anything meeting the
- * harmonised standard EN 301 549, whose Chapter 9 ("Web") is WCAG 2.1
- * level A/AA. So the EN 301 549 clauses below are the BFSG-relevant
- * citations.
+ * adds no per-rule detail of its own: SS 4 BFSG presumes conformity for
+ * content that meets the relevant harmonised standard, which for the web
+ * is EN 301 549 (Chapter 9 references WCAG 2.1 level A/AA). So the EN
+ * 301 549 clauses below are the corresponding citations. Not legal advice.
  */
 export interface Clauses {
   /** WCAG success criteria, dotted (`1.4.3`), numerically sorted, deduped. */
