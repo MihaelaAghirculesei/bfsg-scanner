@@ -27,7 +27,7 @@
   "author": "Mihaela Aghirculesei",
   "type": "module",
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=22.0.0"
   },
   "bin": {
     "bfsg-scanner": "dist/cli/index.js"
