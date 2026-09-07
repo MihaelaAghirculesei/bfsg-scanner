@@ -26,6 +26,13 @@ Requires **Node.js ≥ 22**.
 > flags **24 issues across 5 pages** — 11 critical, 13 serious — each tagged
 > with its WCAG success criterion and EN 301 549 clause, in one PDF for the file.
 
+> **Field-tested:** a 9-page run against a real production site
+> ([aghirculesei.pages.dev](https://aghirculesei.pages.dev)) surfaced five WCAG
+> 2.1 AA breaches the manual review had missed — an unlabelled form control, a
+> malformed `tablist`, a keyboard-trapped scroll region, sub-4.5:1 toggle
+> labels, colour-only links — each mapped to its EN 301 549 clause. All fixed;
+> the site now scans clean.
+
 [![Accessibility scan report](./examples/report-screenshot.png)](https://mihaelaaghirculesei.github.io/bfsg-scanner/)
 
 <sub>A real run against the W3C WAI Before/After Demonstration ·
