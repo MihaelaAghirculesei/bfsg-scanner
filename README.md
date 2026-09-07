@@ -18,7 +18,7 @@ Built on [Playwright](https://playwright.dev) and
 through [EN 301 549](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/)
 to the BFSG clause it breaches — not left as a bare rule ID.
 
-Requires **Node.js ≥ 24**.
+Requires **Node.js ≥ 22**.
 
 > **How I use it:** a one-command accessibility audit of a client site before
 > launch. Pointed at the W3C's
@@ -172,7 +172,7 @@ accessibility. A GitHub Actions step:
 ```yaml
 - uses: actions/setup-node@v4
   with:
-    node-version: 24
+    node-version: 22
 - run: npx playwright install --with-deps chromium
 - run: npx bfsg-scanner https://staging.example.de --fail-on serious
 - if: always()

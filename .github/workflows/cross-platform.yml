@@ -1,9 +1,11 @@
 name: Cross-platform
 
 # The required `ci` check runs on Linux (ci.yml). This is an advisory run of
-# the same verify + build on Windows and macOS, so a platform regression in
-# the CLI or the build shows up on a PR without blocking it. Promote these to
-# required checks in the branch ruleset if that ever becomes worthwhile.
+# the same verify + build on Windows and macOS, and on both the minimum
+# supported Node (`engines.node`) and the version contributors develop on
+# (`.nvmrc`), so a platform- or Node-version regression in the CLI or the
+# build shows up on a PR without blocking it. Promote these to required
+# checks in the branch ruleset if that ever becomes worthwhile.
 
 on:
   pull_request:
@@ -20,12 +22,14 @@ concurrency:
 
 jobs:
   test:
-    name: test (${{ matrix.os }})
+    name: test (${{ matrix.os }}, node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
+        # Minimum supported (engines.node) and the contributor version (.nvmrc).
+        node: ['22', '24.19.0']
     env:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
     steps:
@@ -35,7 +39,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: '.nvmrc'
+          node-version: ${{ matrix.node }}
           cache: 'npm'
 
       - name: Install dependencies
