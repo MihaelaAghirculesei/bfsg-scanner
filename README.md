@@ -44,6 +44,25 @@ Requires **Node.js ≥ 22**.
 4. **Exits non-zero** when violations reach a configurable severity
    threshold, so a CI job can gate a merge on accessibility.
 
+## Why not pa11y-ci or Lighthouse CI?
+
+For a raw WCAG signal in CI, those tools are a fine choice and more mature.
+`bfsg-scanner` exists for the case where the output has to stand as a
+**compliance record under German law**, not just a passing check:
+
+- **Every finding is resolved to an EN 301 549 clause**, the harmonised
+  standard § 4 BFSG grants a presumption of conformity against — so the
+  report cites the provision at issue, not a bare `axe` rule ID.
+- **The artefact is the deliverable.** A single self-contained PDF, in German
+  or English, that leads with a pass/fail verdict and the breached clauses —
+  something you can attach to a file, a contract, or an audit response.
+- **Site-wide in one command**, with sitemap + `robots.txt`-aware crawl,
+  per-host rate limiting and an identifiable User-Agent — no per-URL list to
+  maintain.
+
+It does not replace a manual audit: automated checks catch a fraction of WCAG.
+It makes the part a machine *can* check citeable and repeatable.
+
 ## Quick start
 
 ```sh
