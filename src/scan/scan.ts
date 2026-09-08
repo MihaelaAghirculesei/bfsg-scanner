@@ -10,6 +10,7 @@ const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_RETRIES = 1;
 const DEFAULT_CONCURRENCY = 3;
 const DEFAULT_HOST_RATE_LIMIT_MS = 1_000;
+const DEFAULT_SETTLE_MS = 0;
 
 export async function scan(
   urls: readonly string[],
@@ -41,6 +42,7 @@ async function scanPage(
 ): Promise<PageScanResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const retries = options.retries ?? DEFAULT_RETRIES;
+  const settleMs = options.settleMs ?? DEFAULT_SETTLE_MS;
   const host = safeHost(url);
 
   let lastError: unknown;
@@ -53,6 +55,12 @@ async function scanPage(
     try {
       const page = await context.newPage();
       await page.goto(url, { waitUntil: 'load', timeout: timeoutMs });
+      // Give a client-rendered page time to hydrate and fetch what it needs
+      // (e.g. its translations) before axe reads the DOM. Off by default;
+      // `load` is enough for a server-rendered page.
+      if (settleMs > 0) {
+        await page.waitForTimeout(settleMs);
+      }
       const results = await new AxeBuilder({ page }).withTags([...options.wcagTags]).analyze();
       return {
         status: 'ok',

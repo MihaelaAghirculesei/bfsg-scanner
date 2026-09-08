@@ -74,6 +74,39 @@ function startHtmlServer(
   });
 }
 
+/** Serves a page that is valid at `load` and only grows an alt-less <img>
+ * — an `image-alt` violation — `injectDelayMs` after `DOMContentLoaded`,
+ * standing in for a client-rendered page that finishes after navigation. */
+function startLazyViolationServer(
+  injectDelayMs: number,
+): Promise<{ url: string; close: () => Promise<void> }> {
+  const body = `<!DOCTYPE html><html lang="en"><head><title>t</title></head><body>
+<script>
+  addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+      var img = document.createElement('img');
+      img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+      document.body.appendChild(img);
+    }, ${injectDelayMs});
+  });
+</script>
+</body></html>`;
+  const server: HttpServer = createHttpServer((_req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(body);
+  });
+  return new Promise((resolvePromise) => {
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      const port = typeof address === 'object' && address !== null ? address.port : 0;
+      resolvePromise({
+        url: `http://127.0.0.1:${port}/`,
+        close: () => new Promise((r) => server.close(() => r())),
+      });
+    });
+  });
+}
+
 describe('scan', () => {
   it('reports a page that refuses the connection as a failure, not a crash', async () => {
     const flaky = await startFlakyServer();
@@ -212,6 +245,44 @@ describe('scan', () => {
       expect(receivedUserAgent).toBe(USER_AGENT);
     } finally {
       await new Promise<void>((resolvePromise) => server.close(() => resolvePromise()));
+    }
+  }, 30_000);
+
+  it('with settleMs, waits for content the page adds after load', async () => {
+    const server = await startLazyViolationServer(700);
+    try {
+      const result = await scan(
+        [server.url],
+        { wcagTags: ['wcag2a'], settleMs: 2_000, hostRateLimitMs: 0 },
+        { browser },
+      );
+
+      expect(result.pages[0]?.status).toBe('ok');
+      if (result.pages[0]?.status === 'ok') {
+        expect(result.pages[0].violations.map((v) => v.ruleId)).toContain('image-alt');
+      }
+    } finally {
+      await server.close();
+    }
+  }, 30_000);
+
+  it('without settleMs, scans at load and misses content added later', async () => {
+    // axe runs as soon as `load` fires; for a tiny local page that is well
+    // inside the 700ms inject delay, so the late <img> is not yet in the DOM.
+    const server = await startLazyViolationServer(700);
+    try {
+      const result = await scan(
+        [server.url],
+        { wcagTags: ['wcag2a'], hostRateLimitMs: 0 },
+        { browser },
+      );
+
+      expect(result.pages[0]?.status).toBe('ok');
+      if (result.pages[0]?.status === 'ok') {
+        expect(result.pages[0].violations.map((v) => v.ruleId)).not.toContain('image-alt');
+      }
+    } finally {
+      await server.close();
     }
   }, 30_000);
 });

@@ -112,6 +112,7 @@ bfsg-scanner [url] [options]
 | `--report-language <l>`  | `de` \| `en` (default: `de`). |
 | `--output-dir <dir>`     | Directory for the report files (default: `reports`). |
 | `--format <list>`        | Comma-separated subset of `json,html,pdf` (default: all three). |
+| `--settle <ms>`          | Pause after `load`, before the scan, for a client-rendered page to hydrate (default: `0`). |
 | `-h, --help`             | Show help and exit. |
 | `-V, --version`          | Print the version and exit. |
 
@@ -127,6 +128,7 @@ A YAML file — `bfsg.config.yaml` by default, or `--config <path>`. Only
 baseUrl: "https://example.de"     # required
 
 maxPages: 50                      # sitemap + crawl combined
+settleMs: 0                       # pause after load before the scan (see below)
 wcagTags:                         # axe rule sets to run
   - wcag2a
   - wcag2aa
@@ -143,6 +145,14 @@ reportFormats:                    # any non-empty subset of json | html | pdf
 
 CLI flags override the matching config key. See the annotated
 [`bfsg.config.yaml`](./bfsg.config.yaml) in this repo for a working example.
+
+**`settleMs`** — the scan reads the DOM as soon as the page fires `load`.
+For a server-rendered site that is the finished page and `0` is right. A
+site that renders in the browser — a single-page app, or one that fetches
+its translations after load — is still a shell at that point, and the scan
+would flag controls that populate a moment later. Set `settleMs` to a bit
+more than that site's slowest post-load render (`1000`–`3000` is typical);
+it is added to every page's scan time.
 
 ## Output
 
