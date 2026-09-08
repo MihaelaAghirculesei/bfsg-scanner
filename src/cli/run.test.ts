@@ -214,6 +214,7 @@ describe('run — CLI arguments', () => {
     const out = consoleOutput();
     expect(out).toContain('Usage:');
     expect(out).toContain('--fail-on');
+    expect(out).toContain('--settle');
     expect(out).toContain('Exit codes:');
   });
 
@@ -256,6 +257,19 @@ describe('run — CLI arguments', () => {
   it('returns 2 on an invalid --fail-on value', async () => {
     await expect(
       runCli([`${server.url}/clean.html`, '--fail-on', 'nope', '--output-dir', dir]),
+    ).resolves.toBe(2);
+  });
+
+  it('accepts a numeric --settle and still scans', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--settle', '250', '--output-dir', dir]),
+    ).resolves.toBe(0);
+    expect(readReport().summary.pagesScanned).toBe(1);
+  }, 30_000);
+
+  it('returns 2 on a non-numeric --settle value', async () => {
+    await expect(
+      runCli([`${server.url}/clean.html`, '--settle', 'soon', '--output-dir', dir]),
     ).resolves.toBe(2);
   });
 

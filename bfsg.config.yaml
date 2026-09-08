@@ -7,6 +7,12 @@ baseUrl: "https://example.de"
 # Maximum number of pages to scan (sitemap + crawl fallback combined).
 maxPages: 50
 
+# Milliseconds to wait after a page fires `load` before scanning it.
+# 0 is right for a server-rendered site. Raise it (1000-3000) for a site
+# that renders in the browser or fetches its translations after load, so
+# the scan sees the hydrated page. Override on the CLI with --settle.
+settleMs: 0
+
 # axe-core rule sets to run. WCAG 2.1 AA is the legal baseline under
 # EN 301 549 V3.2.1 / BFSG today.
 wcagTags:

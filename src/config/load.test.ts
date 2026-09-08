@@ -29,6 +29,7 @@ describe('loadConfig', () => {
     expect(config).toEqual({
       baseUrl: 'https://example.de',
       maxPages: 50,
+      settleMs: 0,
       wcagTags: ['wcag2a', 'wcag2aa', 'wcag21aa'],
       excludePaths: [],
       outputDir: 'reports',
@@ -42,6 +43,7 @@ describe('loadConfig', () => {
     const path = writeConfig(`
 baseUrl: https://shop.example.de
 maxPages: 10
+settleMs: 1500
 wcagTags: [wcag2a]
 excludePaths: ["/impressum", "/datenschutz"]
 outputDir: out
@@ -53,6 +55,7 @@ reportFormats: [json]
     const config = loadConfig(path);
 
     expect(config.maxPages).toBe(10);
+    expect(config.settleMs).toBe(1500);
     expect(config.wcagTags).toEqual(['wcag2a']);
     expect(config.excludePaths).toEqual(['/impressum', '/datenschutz']);
     expect(config.outputDir).toBe('out');

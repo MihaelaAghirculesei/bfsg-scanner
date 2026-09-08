@@ -30,6 +30,8 @@ Options:
       --report-language <l>  de | en (default: de).
       --output-dir <dir>     Directory for the report files (default: reports).
       --format <list>        Comma-separated subset of json,html,pdf (default: all three).
+      --settle <ms>          Pause after load, before the scan, for client-rendered
+                             pages to hydrate (default: 0).
   -h, --help                 Show this help and exit.
   -V, --version              Print the version and exit.
 
@@ -62,6 +64,7 @@ const OPTIONS = {
   'report-language': { type: 'string' },
   'output-dir': { type: 'string' },
   format: { type: 'string' },
+  settle: { type: 'string' },
 } as const;
 
 function safeParseArgs(argv: readonly string[]) {
@@ -104,6 +107,12 @@ export function parseCliArgs(argv: readonly string[]): CliArgs {
   }
   if (values['output-dir'] !== undefined) {
     overrides.outputDir = values['output-dir'];
+  }
+  if (values.settle !== undefined) {
+    // Kept as a raw value like the others; `configSchema` rejects a
+    // non-numeric or out-of-range --settle with a clear message.
+    const parsed = Number(values.settle);
+    overrides.settleMs = Number.isNaN(parsed) ? values.settle : parsed;
   }
   if (values.format !== undefined) {
     overrides.reportFormats = values.format
@@ -192,7 +201,11 @@ async function scanAndReport(
   urls: readonly string[],
   browser: Browser,
 ): Promise<number> {
-  const result = await scan(urls, { wcagTags: config.wcagTags }, { browser });
+  const result = await scan(
+    urls,
+    { wcagTags: config.wcagTags, settleMs: config.settleMs },
+    { browser },
+  );
 
   const report = buildReport(result, {
     baseUrl: config.baseUrl,

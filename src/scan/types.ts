@@ -46,6 +46,13 @@ export interface ScanOptions {
   readonly wcagTags: readonly string[];
   /** Navigation timeout per attempt, in milliseconds. Defaults to 15000. */
   readonly timeoutMs?: number;
+  /**
+   * Extra pause after `load` fires, before axe runs, in milliseconds.
+   * Defaults to 0. Raise it for a page that finishes rendering in the
+   * browser — a single-page app, or one that fetches its translations
+   * after load — so the scan asserts on the hydrated DOM, not the shell.
+   */
+  readonly settleMs?: number;
   /** Extra attempts after the first one fails. Defaults to 1 (two attempts total). */
   readonly retries?: number;
   /** Maximum number of pages scanned in parallel. Defaults to 3. */

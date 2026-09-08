@@ -6,7 +6,13 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- `settleMs` config key / `--settle <ms>` flag — a pause between `load` and
+  the scan, so a client-rendered page (a single-page app, or one that
+  fetches its translations after load) is scanned hydrated rather than as
+  its initial shell. Defaults to `0`; a server-rendered page is unaffected.
+  See ADR 0010.
 
 ## [0.1.0] - 2026-09-01
 
