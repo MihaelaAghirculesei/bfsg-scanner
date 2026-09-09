@@ -1,0 +1,42 @@
+version: 2
+
+# Keeps runtime and tooling dependencies current. Minor and patch updates
+# are grouped into a single weekly PR per ecosystem; a major update opens
+# its own PR so it can be reviewed on its own. The GitHub Actions in the
+# workflows are pinned by commit SHA, so this is what keeps them moving.
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # @types/node tracks the Node line pinned in .nvmrc; bump it with
+      # the toolchain, not on its own (see ADR 0009).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions:
+        update-types:
+          - minor
+          - patch
