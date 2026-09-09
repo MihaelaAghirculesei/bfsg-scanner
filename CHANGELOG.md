@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-09
+
 ### Added
 
 - `settleMs` config key / `--settle <ms>` flag — a pause between `load` and
@@ -13,6 +15,14 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   fetches its translations after load) is scanned hydrated rather than as
   its initial shell. Defaults to `0`; a server-rendered page is unaffected.
   See ADR 0010.
+
+### Changed
+
+- Minimum supported Node is now 22 (was 24). See ADR 0009.
+- `schema/report.v1.json`: the `node.target` items are expressed as a
+  `oneOf` (a string, or an array of strings) rather than a type union, so
+  the schema passes ajv strict mode. The same reports validate and
+  `schemaVersion` stays 1.
 
 ## [0.1.0] - 2026-09-01
 
@@ -41,5 +51,6 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/releases/tag/v0.1.0
