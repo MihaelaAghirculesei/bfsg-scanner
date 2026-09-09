@@ -92,7 +92,7 @@ Install it for repeated use with `npm i -g bfsg-scanner`.
 ```sh
 git clone https://github.com/MihaelaAghirculesei/bfsg-scanner.git
 cd bfsg-scanner
-npm install
+npm ci
 npx playwright install chromium
 npm run build
 node dist/cli/index.js --help   # or `npm link` for the bfsg-scanner command
@@ -220,7 +220,7 @@ sites you own or are authorised to test. See
 
 ## Not in scope (yet)
 
-Deliberate omissions for 0.1, not oversights:
+Deliberate omissions for now, not oversights:
 
 - per-rule waivers / ignore lists
 - a baseline and run-to-run diff
@@ -231,6 +231,10 @@ Deliberate omissions for 0.1, not oversights:
 ## Design decisions
 
 Each significant choice is recorded as an ADR in [`docs/adr/`](./docs/adr).
+
+## Security
+
+To report a vulnerability in the tool, see [`SECURITY.md`](./SECURITY.md).
 
 ## License
 
