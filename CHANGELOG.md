@@ -6,6 +6,13 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-14
+
+### Changed
+
+- Dependency bump: `zod` 4.5.4 → 4.6.2, `@biomejs/biome` 2.5.12 → 2.5.13,
+  `@types/node` 24.13.3 → 24.13.4. No behavior change.
+
 ## [0.2.0] - 2026-09-09
 
 ### Added
@@ -51,6 +58,7 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/releases/tag/v0.1.0
