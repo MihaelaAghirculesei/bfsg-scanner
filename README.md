@@ -177,9 +177,11 @@ The terminal prints a summary and the distinct breached clauses.
 | `1`  | Scan completed; violations at or above `--fail-on`. |
 | `2`  | Invalid arguments or configuration. |
 | `3`  | No pages discovered, or a page could not be scanned. |
+| `4`  | Unexpected error — e.g. Chromium not installed, output directory not writable. |
 
 `3` outranks `1`: a run with unreachable pages scanned an incomplete site, so
-"no violations found" would be a claim the data cannot support.
+"no violations found" would be a claim the data cannot support. `4` means
+the run itself broke, not the site: fix the environment and run again.
 
 ## Use in CI
 

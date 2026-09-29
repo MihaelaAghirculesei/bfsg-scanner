@@ -204,6 +204,17 @@ describe('run', () => {
       rmSync(blockedDir, { recursive: true, force: true });
     }
   }, 30_000);
+
+  it('returns 4 with a readable message when the report cannot be written', async () => {
+    // A directory cannot be created beneath a regular file, on any OS.
+    const blocker = join(dir, 'not-a-directory');
+    writeFileSync(blocker, '', 'utf8');
+
+    await expect(
+      runCli([`${server.url}/clean.html`, '--output-dir', join(blocker, 'reports')]),
+    ).resolves.toBe(4);
+    expect(consoleOutput()).toContain('Unexpected error:');
+  }, 30_000);
 });
 
 describe('run — CLI arguments', () => {

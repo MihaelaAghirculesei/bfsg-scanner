@@ -13,6 +13,10 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   one. Previously it discarded the whole sitemap and fell back to crawling.
 - A root sitemap that is not well-formed XML now falls back to crawling
   instead of aborting the run.
+- An unexpected failure (Chromium not installed, an unwritable output
+  directory) now prints a one-line message and exits `4`. Previously it
+  crashed with a stack trace and exit code `1`, the code reserved for
+  "violations found". See ADR 0011.
 
 ## [0.2.1] - 2026-09-14
 
