@@ -40,6 +40,7 @@ Exit codes:
   1  scan completed, violations at or above fail-on
   2  invalid arguments or configuration
   3  no pages discovered, or a page could not be scanned
+  4  unexpected error (e.g. Chromium not installed, output not writable)
 `;
 
 interface CliArgs {
@@ -81,6 +82,7 @@ function safeParseArgs(argv: readonly string[]) {
  *   1 - scan completed, violations at or above `failOn` were found
  *   2 - invalid arguments or configuration
  *   3 - no pages were discovered, or one or more pages could not be scanned
+ *   4 - unexpected error, see `run`
  *
  * 3 outranks 1: a run with unreachable pages scanned an incomplete site, so
  * "no violations found" would be a claim the data cannot support. The
@@ -141,7 +143,23 @@ function resolveConfig(cli: CliArgs): Config {
   return parseConfig({ ...fromFile, ...cli.overrides }, 'command-line arguments');
 }
 
+/**
+ * Anything that escapes the handled paths — Chromium not installed, an
+ * unwritable output directory — ends here as exit code 4. Left to crash, it
+ * would surface as Node's default exit code 1, which the contract reserves
+ * for "violations found": a CI log would read a broken runner as an
+ * inaccessible site.
+ */
 export async function run(argv: readonly string[], deps: ScanDeps = {}): Promise<number> {
+  try {
+    return await runUnguarded(argv, deps);
+  } catch (error) {
+    console.error(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+    return 4;
+  }
+}
+
+async function runUnguarded(argv: readonly string[], deps: ScanDeps): Promise<number> {
   let cli: CliArgs;
   try {
     cli = parseCliArgs(argv);
