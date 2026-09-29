@@ -1,6 +1,6 @@
 import { fetchWithUserAgent } from '../shared/user-agent.js';
 import { isCrawlableUrl, matchesExcludePattern } from './links.js';
-import { parseSitemapXml, SitemapError } from './sitemap.js';
+import { parseSitemapXml, type SitemapDocument, SitemapError } from './sitemap.js';
 
 export interface DiscoverFromSitemapOptions {
   readonly baseUrl: string;
@@ -23,9 +23,10 @@ export interface DiscoverFromSitemapOptions {
  * crawlSite), duplicate URLs are collapsed, and discovery stops as soon as
  * maxPages is reached.
  *
- * A failure to load the root sitemap is fatal (the caller should fall back
- * to crawling). A failure on a sub-sitemap referenced by an index is not:
- * that one sub-sitemap is skipped and discovery continues with the rest.
+ * A failure to load or parse the root sitemap is fatal and always surfaces
+ * as a SitemapError (the caller should fall back to crawling). A failure on
+ * a sub-sitemap referenced by an index is not: that one sub-sitemap is
+ * skipped and discovery continues with the rest.
  */
 export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): Promise<string[]> {
   const {
@@ -57,13 +58,17 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
     }
     visitedSitemaps.add(sitemapUrl);
 
-    let xml: string;
+    // Parsing sits inside the same guard as the fetch: a URL that answers
+    // 200 with something other than a sitemap (a soft-404 HTML page, a
+    // truncated file) is as unusable as one that answers 404, and must be
+    // skipped the same way rather than abort the whole sitemap.
+    let doc: SitemapDocument;
     try {
       const response = await fetchFn(sitemapUrl);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-      xml = await response.text();
+      doc = parseSitemapXml(await response.text());
     } catch (cause) {
       if (depth === 0) {
         throw new SitemapError(
@@ -72,8 +77,6 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
       }
       return;
     }
-
-    const doc = parseSitemapXml(xml);
 
     if (doc.kind === 'sitemapindex') {
       for (const childUrl of doc.sitemaps) {

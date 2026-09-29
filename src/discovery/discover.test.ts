@@ -135,4 +135,46 @@ describe('discoverFromSitemap', () => {
 
     expect(pages).toEqual([`${origin}/page-1`]);
   });
+
+  it('skips a sub-sitemap that answers with a non-sitemap document and keeps the rest', async () => {
+    server = await startStaticServer(dir);
+    const origin = server.url;
+
+    writeFileSync(
+      join(dir, 'sitemap.xml'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${origin}/soft-404.xml</loc></sitemap>
+  <sitemap><loc>${origin}/sitemap-a.xml</loc></sitemap>
+</sitemapindex>`,
+      'utf8',
+    );
+    // Served with 200, like a CMS that renders its "not found" page in place.
+    writeFileSync(
+      join(dir, 'soft-404.xml'),
+      '<!doctype html><html><body><h1>Page not found</h1></body></html>',
+      'utf8',
+    );
+    writeFileSync(
+      join(dir, 'sitemap-a.xml'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${origin}/page-1</loc></url>
+</urlset>`,
+      'utf8',
+    );
+
+    const pages = await discoverFromSitemap({ baseUrl: server.url, maxPages: 50 });
+
+    expect(pages).toEqual([`${origin}/page-1`]);
+  });
+
+  it('throws a SitemapError when the root sitemap is not well-formed XML', async () => {
+    server = await startStaticServer(dir);
+    writeFileSync(join(dir, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"', 'utf8');
+
+    await expect(discoverFromSitemap({ baseUrl: server.url, maxPages: 50 })).rejects.toThrow(
+      SitemapError,
+    );
+  });
 });

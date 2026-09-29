@@ -6,6 +6,14 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- A sub-sitemap that answers `200` with something other than a sitemap (a
+  soft-404 HTML page, a truncated file) is now skipped like an unreachable
+  one. Previously it discarded the whole sitemap and fell back to crawling.
+- A root sitemap that is not well-formed XML now falls back to crawling
+  instead of aborting the run.
+
 ## [0.2.1] - 2026-09-14
 
 ### Changed
