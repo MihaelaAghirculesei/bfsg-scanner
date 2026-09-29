@@ -189,13 +189,13 @@ The non-zero exit at or above `--fail-on` lets a CI job block a merge on
 accessibility. A GitHub Actions step:
 
 ```yaml
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@v7
   with:
     node-version: 22
 - run: npx playwright install --with-deps chromium
 - run: npx bfsg-scanner https://staging.example.de --fail-on serious
 - if: always()
-  uses: actions/upload-artifact@v4
+  uses: actions/upload-artifact@v7
   with:
     name: accessibility-report
     path: reports/
