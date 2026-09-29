@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-09-29
+
 ### Fixed
 
 - A sub-sitemap that answers `200` with something other than a sitemap (a
@@ -17,6 +19,11 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   directory) now prints a one-line message and exits `4`. Previously it
   crashed with a stack trace and exit code `1`, the code reserved for
   "violations found". See ADR 0011.
+
+### Changed
+
+- Dependency bump: `yaml` 2.9.0 → 2.9.1, `zod` 4.6.2 → 4.6.5. No behavior
+  change.
 
 ## [0.2.1] - 2026-09-14
 
@@ -70,7 +77,8 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/releases/tag/v0.1.0
