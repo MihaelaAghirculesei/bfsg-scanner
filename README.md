@@ -113,6 +113,7 @@ bfsg-scanner [url] [options]
 | `--output-dir <dir>`     | Directory for the report files (default: `reports`). |
 | `--format <list>`        | Comma-separated subset of `json,html,pdf` (default: all three). |
 | `--settle <ms>`          | Pause after `load`, before the scan, for a client-rendered page to hydrate (default: `0`). |
+| `--sitemap-origin <o>`   | Origin the sitemap was built for, rewritten onto the `url`'s origin — for a local or staging build whose sitemap lists production URLs (default: none). |
 | `-h, --help`             | Show help and exit. |
 | `-V, --version`          | Print the version and exit. |
 
@@ -127,6 +128,7 @@ A YAML file — `bfsg.config.yaml` by default, or `--config <path>`. Only
 ```yaml
 baseUrl: "https://example.de"     # required
 
+# sitemapOrigin: "https://example.de"  # origin the sitemap was built for (see below)
 maxPages: 50                      # sitemap + crawl combined
 settleMs: 0                       # pause after load before the scan (see below)
 wcagTags:                         # axe rule sets to run
@@ -153,6 +155,19 @@ its translations after load — is still a shell at that point, and the scan
 would flag controls that populate a moment later. Set `settleMs` to a bit
 more than that site's slowest post-load render (`1000`–`3000` is typical);
 it is added to every page's scan time.
+
+**`sitemapOrigin`** — a sitemap lists absolute URLs, and only entries on
+`baseUrl`'s origin are scanned. Scanning a local or staging build whose
+sitemap still lists production URLs would otherwise drop every entry: the
+scanner warns with the number skipped, and when none are left it crawls
+from `baseUrl` instead (exit `3` if that finds nothing either). Set
+`sitemapOrigin` (or `--sitemap-origin`) to the production origin and its
+entries — and sub-sitemaps — are rewritten onto `baseUrl`'s origin, path
+and query kept:
+
+```sh
+npx bfsg-scanner http://localhost:8080/ --sitemap-origin https://example.de
+```
 
 ## Output
 

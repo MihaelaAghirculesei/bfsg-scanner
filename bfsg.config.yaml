@@ -4,6 +4,14 @@
 
 baseUrl: "https://example.de"
 
+# Origin the sitemap was generated for, when it differs from baseUrl's —
+# e.g. a local or staging build whose sitemap.xml lists production URLs.
+# Sitemap entries on this origin are rewritten onto baseUrl's origin, path
+# and query kept. Without it, entries on another origin are skipped with a
+# warning. A bare origin only, no path. Override on the CLI with
+# --sitemap-origin. Unset by default.
+# sitemapOrigin: "https://example.de"
+
 # Maximum number of pages to scan (sitemap + crawl fallback combined).
 maxPages: 50
 

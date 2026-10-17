@@ -6,6 +6,23 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `sitemapOrigin` config key / `--sitemap-origin <origin>` flag — the origin
+  a sitemap was built for, when it is not `baseUrl`'s. Its entries and
+  sub-sitemaps are rewritten onto `baseUrl`'s origin, so a local or staging
+  build can be scanned against a sitemap that lists production URLs. See
+  ADR 0012.
+
+### Fixed
+
+- Sitemap entries on another origin than `baseUrl` were dropped silently,
+  so a local or staging build whose sitemap lists production URLs scanned
+  only the home page and could exit `0`. They now produce a warning with
+  the number skipped, and a sitemap that leaves no page on `baseUrl`'s
+  origin falls back to the crawl; if that finds nothing either, the run
+  exits `3`. ([#58](https://github.com/MihaelaAghirculesei/bfsg-scanner/issues/58))
+
 ## [0.2.2] - 2026-09-29
 
 ### Fixed

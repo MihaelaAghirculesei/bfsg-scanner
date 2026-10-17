@@ -4,7 +4,8 @@ Date: 2026-08-26
 
 ## Status
 
-Accepted
+Accepted. Amended by [ADR 0012](./0012-off-origin-sitemap-entries.md): a
+sitemap with no usable on-origin page now falls back to the crawl too.
 
 ## Context
 
