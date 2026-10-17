@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-17
+
 ### Added
 
 - `sitemapOrigin` config key / `--sitemap-origin <origin>` flag — the origin
@@ -22,6 +24,16 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the number skipped, and a sitemap that leaves no page on `baseUrl`'s
   origin falls back to the crawl; if that finds nothing either, the run
   exits `3`. ([#58](https://github.com/MihaelaAghirculesei/bfsg-scanner/issues/58))
+
+### Changed
+
+- The scan engine moves to `axe-core` 4.14.0 (with `@axe-core/playwright`
+  4.14.0) and `playwright` 1.64.0. axe-core 4.14 fixes false positives and
+  sharpens several rules, so the same site can report a slightly different
+  set of findings than under 0.2.x.
+- Dependency bump: `fast-xml-parser` 5.11.1 → 5.11.2, `@biomejs/biome`
+  2.5.14 → 2.5.15, `@types/node` 24.19.0 → 24.19.2, `vitest` 5.0.2 → 5.0.3.
+  No behavior change.
 
 ## [0.2.2] - 2026-09-29
 
@@ -94,7 +106,8 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.1.0...v0.2.0
