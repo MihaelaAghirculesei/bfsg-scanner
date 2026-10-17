@@ -13,15 +13,20 @@ export interface DiscoverFromSitemapOptions {
   readonly fetchFn?: typeof fetch;
   /** Guards against pathological or cyclic sitemap indexes. Defaults to 3. */
   readonly maxSitemapDepth?: number;
+  /**
+   * Called once, after discovery, with the distinct page entries dropped
+   * for being on another origin than baseUrl. Not called when there were none.
+   */
+  readonly onOffOrigin?: (skippedUrls: readonly string[]) => void;
 }
 
 /**
  * Discovers page URLs from a site's sitemap, following a sitemap index to
  * its sub-sitemaps as needed. Off-origin entries are dropped (a sitemap
- * should only ever list its own site, but nothing enforces that), non-page
- * assets and excludePaths matches are filtered out (identically to
- * crawlSite), duplicate URLs are collapsed, and discovery stops as soon as
- * maxPages is reached.
+ * should only ever list its own site, but nothing enforces that) and
+ * reported through onOffOrigin, non-page assets and excludePaths matches
+ * are filtered out (identically to crawlSite), duplicate URLs are
+ * collapsed, and discovery stops as soon as maxPages is reached.
  *
  * A failure to load or parse the root sitemap is fatal and always surfaces
  * as a SitemapError (the caller should fall back to crawling). A failure on
@@ -36,17 +41,22 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
     excludePaths = [],
     fetchFn = fetchWithUserAgent,
     maxSitemapDepth = 3,
+    onOffOrigin,
   } = options;
 
   const origin = new URL(baseUrl).origin;
   const rootSitemapUrl = new URL(sitemapPath, baseUrl).toString();
 
   const collected: string[] = [];
+  const offOrigin: string[] = [];
   const seenPages = new Set<string>();
   const visitedSitemaps = new Set<string>();
 
   await visitSitemap(rootSitemapUrl, 0);
 
+  if (offOrigin.length > 0) {
+    onOffOrigin?.(offOrigin);
+  }
   return collected.slice(0, maxPages);
 
   async function visitSitemap(sitemapUrl: string, depth: number): Promise<void> {
@@ -103,11 +113,11 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
       } catch {
         continue;
       }
-      if (
-        parsed.origin !== origin ||
-        !isCrawlableUrl(parsed) ||
-        matchesExcludePattern(parsed.pathname, excludePaths)
-      ) {
+      if (parsed.origin !== origin) {
+        offOrigin.push(pageUrl);
+        continue;
+      }
+      if (!isCrawlableUrl(parsed) || matchesExcludePattern(parsed.pathname, excludePaths)) {
         continue;
       }
       collected.push(pageUrl);

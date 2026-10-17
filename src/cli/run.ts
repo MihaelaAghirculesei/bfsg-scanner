@@ -193,6 +193,7 @@ async function runUnguarded(argv: readonly string[], deps: ScanDeps): Promise<nu
     baseUrl: config.baseUrl,
     maxPages: config.maxPages,
     excludePaths: config.excludePaths,
+    onWarning: (message) => console.warn(message),
   });
   if (urls.length === 0) {
     console.error(`No scannable pages discovered for ${config.baseUrl}`);
