@@ -86,6 +86,18 @@ reportFormats: [json]
     expect(() => loadConfig(path)).toThrow(/baseUrl/);
   });
 
+  it('accepts a bare sitemapOrigin and rejects one with a path', () => {
+    expect(
+      loadConfig(writeConfig('baseUrl: http://localhost:8080\nsitemapOrigin: https://example.de\n'))
+        .sitemapOrigin,
+    ).toBe('https://example.de');
+    expect(() =>
+      loadConfig(
+        writeConfig('baseUrl: http://localhost:8080\nsitemapOrigin: https://example.de/de\n'),
+      ),
+    ).toThrow(/sitemapOrigin/);
+  });
+
   it('rejects an unknown field to catch typos early', () => {
     const path = writeConfig('baseUrl: https://example.de\nmaxPagse: 10\n');
 

@@ -96,3 +96,76 @@ describe('discoverSite', () => {
     ]);
   });
 });
+
+describe('discoverSite — off-origin sitemap entries', () => {
+  const PRODUCTION = 'https://www.example.invalid';
+
+  function writeLinkedPages(): void {
+    writeFileSync(join(dir, 'index.html'), '<a href="/about.html">About</a>', 'utf8');
+    writeFileSync(join(dir, 'about.html'), '<p>About</p>', 'utf8');
+  }
+
+  it('warns and crawls instead when every sitemap entry is off-origin', async () => {
+    server = await startStaticServer(dir);
+    writeLinkedPages();
+    writeSitemap([`${PRODUCTION}/`, `${PRODUCTION}/about.html`]);
+    const warnings: string[] = [];
+
+    const pages = await discoverSite({
+      baseUrl: server.url,
+      maxPages: 50,
+      onWarning: (message) => warnings.push(message),
+    });
+
+    expect(pages).toEqual([`${server.url}/`, `${server.url}/about.html`]);
+    expect(warnings).toEqual([
+      `Skipped 2 sitemap entries on another origin than ${server.url} (${PRODUCTION}). Set sitemapOrigin (--sitemap-origin) to scan them on ${server.url}.`,
+      `The sitemap lists no scannable page on ${server.url}; crawling from ${server.url}.`,
+    ]);
+  });
+
+  it('warns and keeps the on-origin entries of a mixed sitemap, without crawling', async () => {
+    server = await startStaticServer(dir);
+    writeLinkedPages();
+    writeSitemap([`${server.url}/page-1`, `${PRODUCTION}/page-2`]);
+    const warnings: string[] = [];
+
+    const pages = await discoverSite({
+      baseUrl: server.url,
+      maxPages: 50,
+      onWarning: (message) => warnings.push(message),
+    });
+
+    // No /about.html: the crawl did not run.
+    expect(pages).toEqual([`${server.url}/`, `${server.url}/page-1`]);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatch(/^Skipped 1 sitemap entry on another origin/);
+  });
+
+  it('returns no pages when the sitemap is all off-origin and the crawl is disallowed', async () => {
+    server = await startStaticServer(dir);
+    writeLinkedPages();
+    writeFileSync(join(dir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf8');
+    writeSitemap([`${PRODUCTION}/about.html`]);
+
+    const pages = await discoverSite({ baseUrl: server.url, maxPages: 50 });
+
+    expect(pages).toEqual([]);
+  });
+
+  it('scans the sitemap on baseUrl when sitemapOrigin names its origin, with no warning', async () => {
+    server = await startStaticServer(dir);
+    writeSitemap([`${PRODUCTION}/`, `${PRODUCTION}/page-1`, `${PRODUCTION}/page-2`]);
+    const warnings: string[] = [];
+
+    const pages = await discoverSite({
+      baseUrl: server.url,
+      maxPages: 50,
+      sitemapOrigin: PRODUCTION,
+      onWarning: (message) => warnings.push(message),
+    });
+
+    expect(pages).toEqual([`${server.url}/`, `${server.url}/page-1`, `${server.url}/page-2`]);
+    expect(warnings).toEqual([]);
+  });
+});

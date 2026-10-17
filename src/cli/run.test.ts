@@ -217,6 +217,75 @@ describe('run', () => {
   }, 30_000);
 });
 
+describe('run — a sitemap built for another origin', () => {
+  const PRODUCTION = 'https://www.example.invalid';
+  const CLEAN_PAGE = readFileSync(join(FIXTURES_SITE_DIR, 'clean.html'), 'utf8');
+
+  let siteDir: string;
+  let site: StaticServer;
+
+  beforeEach(async () => {
+    // A local build whose sitemap still lists the production URLs.
+    siteDir = mkdtempSync(join(tmpdir(), 'bfsg-cli-staging-'));
+    writeFileSync(join(siteDir, 'index.html'), CLEAN_PAGE, 'utf8');
+    writeFileSync(join(siteDir, 'about.html'), CLEAN_PAGE, 'utf8');
+    writeFileSync(
+      join(siteDir, 'sitemap.xml'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${PRODUCTION}/</loc></url>
+  <url><loc>${PRODUCTION}/about.html</loc></url>
+</urlset>`,
+      'utf8',
+    );
+    site = await startStaticServer(siteDir);
+  });
+
+  afterEach(async () => {
+    await site.close();
+    rmSync(siteDir, { recursive: true, force: true });
+  });
+
+  it('warns about the skipped entries instead of passing on the home page alone', async () => {
+    await expect(runCli([site.url, '--output-dir', dir, '--format', 'json'])).resolves.toBe(0);
+
+    expect(consoleOutput()).toContain(
+      `Skipped 2 sitemap entries on another origin than ${site.url}`,
+    );
+    expect(consoleOutput()).toContain('crawling from');
+  }, 30_000);
+
+  it('returns 3 when the sitemap is all off-origin and the crawl finds nothing', async () => {
+    writeFileSync(join(siteDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf8');
+
+    await expect(runCli([site.url, '--output-dir', dir])).resolves.toBe(3);
+    expect(consoleOutput()).toContain('Skipped 2 sitemap entries');
+    expect(consoleOutput()).toContain('No scannable pages discovered');
+  }, 30_000);
+
+  it('scans every sitemap page on the local origin with --sitemap-origin', async () => {
+    // The crawl would not find /about.html: index.html does not link to it.
+    await expect(
+      runCli([site.url, '--sitemap-origin', PRODUCTION, '--output-dir', dir, '--format', 'json']),
+    ).resolves.toBe(0);
+
+    expect(readReport().summary.pagesScanned).toBe(2);
+    expect(consoleOutput()).not.toContain('Skipped');
+  }, 30_000);
+
+  it('takes sitemapOrigin from the config file', async () => {
+    const path = writeConfig(site.url, `sitemapOrigin: ${PRODUCTION}\nreportFormats: [json]\n`);
+
+    await expect(runCli(['--config', path])).resolves.toBe(0);
+    expect(readReport().summary.pagesScanned).toBe(2);
+  }, 30_000);
+
+  it('returns 2 when --sitemap-origin is not a bare origin', async () => {
+    await expect(runCli([site.url, '--sitemap-origin', `${PRODUCTION}/de/`])).resolves.toBe(2);
+    expect(consoleOutput()).toContain('sitemapOrigin');
+  });
+});
+
 describe('run — CLI arguments', () => {
   it('prints usage for --help / -h and exits 0 without scanning', async () => {
     for (const flag of ['--help', '-h']) {

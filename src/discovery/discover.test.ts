@@ -177,4 +177,91 @@ describe('discoverFromSitemap', () => {
       SitemapError,
     );
   });
+
+  it('reports the distinct off-origin entries it dropped', async () => {
+    server = await setUpSyntheticSite();
+    const reported: string[][] = [];
+
+    await discoverFromSitemap({
+      baseUrl: server.url,
+      maxPages: 50,
+      onOffOrigin: (skipped) => reported.push([...skipped]),
+    });
+
+    expect(reported).toEqual([['https://external.example.invalid/page']]);
+  });
+
+  it('does not report when every entry is on-origin', async () => {
+    server = await startStaticServer(dir);
+    writeUrlset('sitemap.xml', [`${server.url}/page-1`]);
+    let called = false;
+
+    await discoverFromSitemap({
+      baseUrl: server.url,
+      maxPages: 50,
+      onOffOrigin: () => {
+        called = true;
+      },
+    });
+
+    expect(called).toBe(false);
+  });
+
+  it('rewrites entries on sitemapOrigin onto the baseUrl origin, keeping path and query', async () => {
+    server = await startStaticServer(dir);
+    writeUrlset('sitemap.xml', [
+      `${PRODUCTION}/`,
+      `${PRODUCTION}/about?lang=en`,
+      // Listed on both origins: kept once.
+      `${server.url}/about?lang=en`,
+      'https://elsewhere.example.invalid/page',
+    ]);
+    const reported: string[][] = [];
+
+    const pages = await discoverFromSitemap({
+      baseUrl: server.url,
+      maxPages: 50,
+      sitemapOrigin: PRODUCTION,
+      onOffOrigin: (skipped) => reported.push([...skipped]),
+    });
+
+    expect(pages).toEqual([`${server.url}/`, `${server.url}/about?lang=en`]);
+    expect(reported).toEqual([['https://elsewhere.example.invalid/page']]);
+  });
+
+  it('rewrites sub-sitemap URLs on sitemapOrigin, so the local copies are read', async () => {
+    server = await startStaticServer(dir);
+    writeFileSync(
+      join(dir, 'sitemap.xml'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${PRODUCTION}/sitemap-pages.xml</loc></sitemap>
+</sitemapindex>`,
+      'utf8',
+    );
+    writeUrlset('sitemap-pages.xml', [`${PRODUCTION}/page-1`]);
+
+    const pages = await discoverFromSitemap({
+      baseUrl: server.url,
+      maxPages: 50,
+      sitemapOrigin: `${PRODUCTION}/`,
+    });
+
+    expect(pages).toEqual([`${server.url}/page-1`]);
+  });
 });
+
+/** The origin a staging or local build's sitemap was generated for. */
+const PRODUCTION = 'https://www.example.invalid';
+
+function writeUrlset(name: string, entries: readonly string[]): void {
+  const urls = entries.map((loc) => `  <url><loc>${loc}</loc></url>`).join('\n');
+  writeFileSync(
+    join(dir, name),
+    `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`,
+    'utf8',
+  );
+}
