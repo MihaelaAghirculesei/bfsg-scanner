@@ -54,7 +54,7 @@
     "prepublishOnly": "npm run verify && npm run build"
   },
   "dependencies": {
-    "@axe-core/playwright": "4.13.0",
+    "@axe-core/playwright": "4.14.0",
     "axe-core": "4.14.0",
     "fast-xml-parser": "5.11.2",
     "playwright": "1.64.0",
