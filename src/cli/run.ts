@@ -32,7 +32,10 @@ Options:
       --format <list>        Comma-separated subset of json,html,pdf (default: all three).
       --settle <ms>          Pause after load, before the scan, for client-rendered
                              pages to hydrate (default: 0).
-  -h, --help                 Show this help and exit.
+      --sitemap-origin <o>   Origin the sitemap was built for, e.g. production while
+                             scanning a local or staging build; its entries are
+                             rewritten onto the url's origin (default: none).
+  -h, --help                Show this help and exit.
   -V, --version              Print the version and exit.
 
 Exit codes:
@@ -66,6 +69,7 @@ const OPTIONS = {
   'output-dir': { type: 'string' },
   format: { type: 'string' },
   settle: { type: 'string' },
+  'sitemap-origin': { type: 'string' },
 } as const;
 
 function safeParseArgs(argv: readonly string[]) {
@@ -115,6 +119,9 @@ export function parseCliArgs(argv: readonly string[]): CliArgs {
     // non-numeric or out-of-range --settle with a clear message.
     const parsed = Number(values.settle);
     overrides.settleMs = Number.isNaN(parsed) ? values.settle : parsed;
+  }
+  if (values['sitemap-origin'] !== undefined) {
+    overrides.sitemapOrigin = values['sitemap-origin'];
   }
   if (values.format !== undefined) {
     overrides.reportFormats = values.format
@@ -193,6 +200,7 @@ async function runUnguarded(argv: readonly string[], deps: ScanDeps): Promise<nu
     baseUrl: config.baseUrl,
     maxPages: config.maxPages,
     excludePaths: config.excludePaths,
+    ...(config.sitemapOrigin !== undefined ? { sitemapOrigin: config.sitemapOrigin } : {}),
     onWarning: (message) => console.warn(message),
   });
   if (urls.length === 0) {

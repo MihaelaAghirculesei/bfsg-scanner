@@ -9,6 +9,8 @@ export interface DiscoverSiteOptions {
   readonly excludePaths?: readonly string[];
   /** Injectable for tests; defaults to the global fetch (with User-Agent). */
   readonly fetchFn?: typeof fetch;
+  /** Origin the sitemap was generated for, rewritten onto baseUrl's; see discoverFromSitemap. */
+  readonly sitemapOrigin?: string;
   /** Receives one line per discovery problem worth surfacing. Defaults to none. */
   readonly onWarning?: (message: string) => void;
 }
@@ -24,7 +26,8 @@ export interface DiscoverSiteOptions {
  * Sitemap entries on another origin are dropped with a warning: they are
  * the typical sign of a local or staging build whose sitemap points at
  * production, and dropping them silently would leave a scan of the home
- * page alone looking like a clean site.
+ * page alone looking like a clean site. sitemapOrigin names that other
+ * origin, so its entries are rewritten onto baseUrl's and scanned there.
  *
  * Both strategies apply excludePaths and the non-page-asset filter
  * identically. They differ on robots.txt: the crawl path obeys it (a
@@ -37,14 +40,16 @@ export interface DiscoverSiteOptions {
  * from baseUrl. The result never exceeds maxPages.
  */
 export async function discoverSite(options: DiscoverSiteOptions): Promise<string[]> {
-  const { baseUrl, maxPages, excludePaths = [], fetchFn, onWarning } = options;
+  const { baseUrl, maxPages, excludePaths = [], fetchFn, sitemapOrigin, onWarning } = options;
   const shared = { baseUrl, maxPages, excludePaths, ...(fetchFn ? { fetchFn } : {}) };
   const origin = new URL(baseUrl).origin;
 
   try {
     const pages = await discoverFromSitemap({
       ...shared,
-      onOffOrigin: (skipped) => onWarning?.(describeOffOrigin(skipped, origin)),
+      ...(sitemapOrigin !== undefined ? { sitemapOrigin } : {}),
+      onOffOrigin: (skipped) =>
+        onWarning?.(describeOffOrigin(skipped, origin, sitemapOrigin === undefined)),
     });
     if (pages.length > 0) {
       return withBaseUrl(pages, baseUrl, maxPages);
@@ -59,11 +64,14 @@ export async function discoverSite(options: DiscoverSiteOptions): Promise<string
   return crawlSite(shared);
 }
 
-function describeOffOrigin(skipped: readonly string[], origin: string): string {
+function describeOffOrigin(skipped: readonly string[], origin: string, withHint: boolean): string {
   const origins = [...new Set(skipped.map((url) => new URL(url).origin))];
   const shown = origins.length > 3 ? [...origins.slice(0, 3), '…'] : origins;
   const entries = skipped.length === 1 ? 'entry' : 'entries';
-  return `Skipped ${skipped.length} sitemap ${entries} on another origin than ${origin} (${shown.join(', ')}).`;
+  const message = `Skipped ${skipped.length} sitemap ${entries} on another origin than ${origin} (${shown.join(', ')}).`;
+  return withHint
+    ? `${message} Set sitemapOrigin (--sitemap-origin) to scan them on ${origin}.`
+    : message;
 }
 
 function withBaseUrl(pages: readonly string[], baseUrl: string, maxPages: number): string[] {

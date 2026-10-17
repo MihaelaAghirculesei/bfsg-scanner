@@ -14,6 +14,13 @@ export interface DiscoverFromSitemapOptions {
   /** Guards against pathological or cyclic sitemap indexes. Defaults to 3. */
   readonly maxSitemapDepth?: number;
   /**
+   * Origin the sitemap was generated for, when it is not baseUrl's — e.g.
+   * production, while baseUrl is a local or staging build. Entries (and
+   * sub-sitemaps) on this origin are rewritten onto baseUrl's origin,
+   * keeping path and query. Defaults to none.
+   */
+  readonly sitemapOrigin?: string;
+  /**
    * Called once, after discovery, with the distinct page entries dropped
    * for being on another origin than baseUrl. Not called when there were none.
    */
@@ -41,10 +48,12 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
     excludePaths = [],
     fetchFn = fetchWithUserAgent,
     maxSitemapDepth = 3,
+    sitemapOrigin,
     onOffOrigin,
   } = options;
 
   const origin = new URL(baseUrl).origin;
+  const rewriteFrom = sitemapOrigin === undefined ? undefined : new URL(sitemapOrigin).origin;
   const rootSitemapUrl = new URL(sitemapPath, baseUrl).toString();
 
   const collected: string[] = [];
@@ -93,15 +102,18 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
         if (collected.length >= maxPages) {
           return;
         }
-        await visitSitemap(childUrl, depth + 1);
+        await visitSitemap(rewriteOrigin(childUrl), depth + 1);
       }
       return;
     }
 
-    for (const pageUrl of doc.urls) {
+    for (const listedUrl of doc.urls) {
       if (collected.length >= maxPages) {
         return;
       }
+      // Deduplicated after the rewrite, so a sitemap listing a page on both
+      // origins yields it once.
+      const pageUrl = rewriteOrigin(listedUrl);
       if (seenPages.has(pageUrl)) {
         continue;
       }
@@ -122,5 +134,22 @@ export async function discoverFromSitemap(options: DiscoverFromSitemapOptions): 
       }
       collected.push(pageUrl);
     }
+  }
+
+  /** Moves a URL on sitemapOrigin onto baseUrl's origin; any other URL is returned verbatim. */
+  function rewriteOrigin(url: string): string {
+    if (rewriteFrom === undefined) {
+      return url;
+    }
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      return url;
+    }
+    if (parsed.origin !== rewriteFrom) {
+      return url;
+    }
+    return new URL(`${parsed.pathname}${parsed.search}${parsed.hash}`, origin).toString();
   }
 }
