@@ -26,7 +26,7 @@ export const configSchema = z.strictObject({
   sitemapOrigin: originSchema.optional(),
   maxPages: z.number().int().positive().max(1000).default(50),
   settleMs: z.number().int().min(0).max(60_000).default(0),
-  wcagTags: z.array(wcagTagSchema).min(1).default(['wcag2a', 'wcag2aa', 'wcag21aa']),
+  wcagTags: z.array(wcagTagSchema).min(1).default(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']),
   excludePaths: z.array(z.string()).default([]),
   outputDir: z.string().min(1).default('reports'),
   failOn: failOnSchema.default('serious'),

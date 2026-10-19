@@ -30,7 +30,7 @@ describe('loadConfig', () => {
       baseUrl: 'https://example.de',
       maxPages: 50,
       settleMs: 0,
-      wcagTags: ['wcag2a', 'wcag2aa', 'wcag21aa'],
+      wcagTags: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
       excludePaths: [],
       outputDir: 'reports',
       failOn: 'serious',
