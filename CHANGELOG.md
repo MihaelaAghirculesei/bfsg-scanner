@@ -6,6 +6,18 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The default `wcagTags` left out `wcag21a`, the Level A criteria WCAG 2.1
+  added, so a default run never checked SC 2.5.3 *Label in Name* (EN 301 549
+  clause 9.2.5.3, rule `label-content-name-mismatch`, enabled since axe-core
+  4.14). The default is now `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`. See
+  ADR 0013. ([#65](https://github.com/MihaelaAghirculesei/bfsg-scanner/issues/65))
+
+  **This can fail a CI gate that passed on 0.3.0:** a default run can now
+  report SC 2.5.3 violations it did not report before. To keep the old rule
+  set for now, list `wcag2a`, `wcag2aa`, `wcag21aa` in `wcagTags`.
+
 ## [0.3.0] - 2026-10-17
 
 ### Added
