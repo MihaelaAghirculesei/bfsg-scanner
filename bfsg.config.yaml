@@ -22,10 +22,12 @@ maxPages: 50
 settleMs: 0
 
 # axe-core rule sets to run. WCAG 2.1 AA is the legal baseline under
-# EN 301 549 V3.2.1 / BFSG today.
+# EN 301 549 V3.2.1 / BFSG today. wcag21a and wcag21aa hold the Level A and
+# AA criteria WCAG 2.1 added, so a WCAG 2.1 AA scan needs all four.
 wcagTags:
   - wcag2a
   - wcag2aa
+  - wcag21a
   - wcag21aa
 
 # Paths excluded from crawling (glob-style, matched against the URL path).

@@ -134,6 +134,7 @@ settleMs: 0                       # pause after load before the scan (see below)
 wcagTags:                         # axe rule sets to run
   - wcag2a
   - wcag2aa
+  - wcag21a
   - wcag21aa
 excludePaths: []                  # URL-path globs to skip while crawling
 outputDir: reports                # where the report files are written
