@@ -1,9 +1,10 @@
 # fixtures/site — ground truth
 
 Golden-test fixtures for the scan engine. Every page below was verified against
-a real run of `axe-core@4.13.0` in Chromium via Playwright, scoped to the same
-rule set the scanner uses (`--tags wcag2a,wcag2aa,wcag21aa`). These numbers are
-not estimates — they are what the tool must reproduce exactly. If a future
+a real run of `axe-core@4.14.0` in Chromium via Playwright, scoped to the same
+rule set the scanner uses by default (`wcag2a`, `wcag2aa`, `wcag21a`,
+`wcag21aa`). These numbers are not estimates — they are what the tool must
+reproduce exactly. If a future
 axe-core upgrade changes any of them, the golden test (`src/scan/*.e2e.test.ts`,
 added on top of this fixture set) will fail and this file must be updated
 alongside the explanation, not silently.
@@ -28,8 +29,9 @@ asserts them alongside the rule and node counts.
 
 The original sketch for this fixture set included a heading-order violation.
 `heading-order` is tagged `cat.semantics` / `best-practice` in axe-core, not
-`wcag2a` / `wcag2aa` / `wcag21aa` — so with the scanner's default rule set it
-would never fire, and a fixture built around it would silently test nothing.
+`wcag2a` / `wcag2aa` / `wcag21a` / `wcag21aa` — so with the scanner's default
+rule set it would never fire, and a fixture built around it would silently
+test nothing.
 Verified via `axe.getRules(['wcag2a','wcag2aa','wcag21aa'])` before writing
 any fixture HTML; `link-name` took its place instead.
 
