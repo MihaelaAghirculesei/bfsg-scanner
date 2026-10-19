@@ -25,6 +25,12 @@ const EXPECTED: Readonly<Record<string, ExpectedFinding | null>> = {
     wcagSc: ['1.4.3'],
     en301549: ['9.1.4.3'],
   },
+  'label-in-name.html': {
+    ruleId: 'label-content-name-mismatch',
+    nodes: 1,
+    wcagSc: ['2.5.3'],
+    en301549: ['9.2.5.3'],
+  },
   'missing-alt.html': {
     ruleId: 'image-alt',
     nodes: 1,
@@ -73,7 +79,7 @@ describe('scan (golden fixture site)', () => {
       pageNames.map((name) => `${server.url}/${name}`),
       {
         wcagTags: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
-        // All 6 pages share one host; this test cares about correctness,
+        // All 7 pages share one host; this test cares about correctness,
         // not the production rate limit's pacing.
         hostRateLimitMs: 0,
       },

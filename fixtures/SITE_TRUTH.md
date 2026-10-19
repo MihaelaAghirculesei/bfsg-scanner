@@ -13,19 +13,20 @@ alongside the explanation, not silently.
 |---|---|---|---|---|---|
 | `clean.html` | 0 | — | — | — | — |
 | `contrast.html` | 1 | `color-contrast` | 1 | 1.4.3 | 9.1.4.3 |
+| `label-in-name.html` | 1 | `label-content-name-mismatch` | 1 | 2.5.3 | 9.2.5.3 |
 | `missing-alt.html` | 1 | `image-alt` | 1 | 1.1.1 | 9.1.1.1 |
 | `missing-label.html` | 1 | `label` | 1 | 4.1.2 | 9.4.1.2 |
 | `missing-lang.html` | 1 | `html-has-lang` | 1 | 3.1.1 | 9.3.1.1 |
 | `unnamed-link.html` | 1 | `link-name` | 1 | 2.4.4, 4.1.2 | 9.2.4.4, 9.4.1.2 |
 
-Total across the fixture site: **6 pages, 5 violations, 0 `incomplete` results.**
+Total across the fixture site: **7 pages, 6 violations, 0 `incomplete` results.**
 
 The WCAG SC and EN 301 549 columns are read straight from each axe rule's
 `tags` (`wcag143` → SC 1.4.3, `EN-9.1.4.3` → clause 9.1.4.3), not authored by
 hand — see `src/report/clauses.ts` and ADR 0004. `src/scan/scan.e2e.test.ts`
 asserts them alongside the rule and node counts.
 
-## Why these five rules, not "heading order"
+## Why these rules, not "heading order"
 
 The original sketch for this fixture set included a heading-order violation.
 `heading-order` is tagged `cat.semantics` / `best-practice` in axe-core, not
@@ -34,6 +35,10 @@ rule set it would never fire, and a fixture built around it would silently
 test nothing.
 Verified via `axe.getRules(['wcag2a','wcag2aa','wcag21aa'])` before writing
 any fixture HTML; `link-name` took its place instead.
+
+`label-in-name.html` came later, with issue #65: `label-content-name-mismatch`
+(SC 2.5.3 *Label in Name*) carries `wcag21a`, the one tag the original rule
+set left out, and was `experimental` until axe-core 4.14.
 
 ## Design notes
 
@@ -45,6 +50,10 @@ any fixture HTML; `link-name` took its place instead.
   the link. A missing `alt` would also trigger `image-alt` on the same
   element, muddying the count; an empty `alt` is valid markup (it marks the
   image as decorative) and isolates the failure to `link-name`.
+- `label-in-name.html` gives the submit button `aria-label="Formular
+  übermitteln"`, which does not contain its visible text "Absenden". The
+  button keeps an accessible name, so `button-name` stays quiet and only
+  `label-content-name-mismatch` fires.
 - `contrast.html` uses `#aaaaaa` text on `#ffffff` (contrast ratio ≈ 2.3:1),
   well under the 4.5:1 threshold for normal-size text.
 
