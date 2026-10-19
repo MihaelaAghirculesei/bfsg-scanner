@@ -22,8 +22,8 @@ export interface Clauses {
  * A WCAG SC tag: `wcag` followed by the digits of the criterion number with
  * the dots removed — `wcag143` is SC 1.4.3, `wcag1410` is SC 1.4.10. The
  * first two digits are always the principle and guideline; whatever follows
- * is the criterion. Level tags (`wcag2a`, `wcag2aa`, `wcag21aa`) carry
- * letters after `wcag` and so never match.
+ * is the criterion. Level tags (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`)
+ * carry letters after `wcag` and so never match.
  */
 const WCAG_SC_TAG = /^wcag(\d)(\d)(\d+)$/;
 

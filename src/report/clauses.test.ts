@@ -108,6 +108,7 @@ describe('clausesFor', () => {
       clausesFor([
         'cat.color',
         'wcag2aa',
+        'wcag21a',
         'wcag21aa',
         'wcag22aa',
         'best-practice',
