@@ -6,6 +6,11 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Dependency bump: `playwright` 1.64.0 → 1.64.1, `zod` 4.6.5 → 4.6.7,
+  `vitest` 5.0.3 → 5.0.5. No behavior change.
+
 ## [0.4.0] - 2026-10-19
 
 ### Fixed
