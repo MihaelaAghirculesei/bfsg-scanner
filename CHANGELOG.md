@@ -6,10 +6,19 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-24
+
+### Security
+
+- `zod` 4.6.5 → 4.6.7 fixes a high severity advisory: validating oversized
+  constrained collections could exhaust memory
+  ([GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)).
+  0.4.0 pinned the vulnerable version, so every install received it.
+
 ### Changed
 
-- Dependency bump: `playwright` 1.64.0 → 1.64.1, `zod` 4.6.5 → 4.6.7,
-  `vitest` 5.0.3 → 5.0.5. No behavior change.
+- Dependency bump: `playwright` 1.64.0 → 1.64.1, `vitest` 5.0.3 → 5.0.5.
+  No behavior change.
 
 ## [0.4.0] - 2026-10-19
 
@@ -125,7 +134,8 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.1...v0.2.2
