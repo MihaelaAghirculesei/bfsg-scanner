@@ -62,7 +62,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.15",
+    "@biomejs/biome": "2.6.2",
     "@types/node": "24.19.2",
     "ajv": "8.20.0",
     "rimraf": "6.1.3",
