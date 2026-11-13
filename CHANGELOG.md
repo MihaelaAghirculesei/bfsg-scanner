@@ -6,6 +6,24 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-11-13
+
+### Security
+
+- `fast-xml-parser` 5.11.2 → 5.12.0 fixes a low severity advisory: scanning
+  unterminated stop-node tags could use quadratic CPU
+  ([GHSA-474x-hrwr-fgx4](https://github.com/advisories/GHSA-474x-hrwr-fgx4)).
+  0.4.1 pinned the vulnerable version, so every install received it.
+- Development only: `minimatch` is overridden to `^11.0.1` to clear
+  [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+  Overrides do not reach installs of the published package.
+
+### Changed
+
+- Dependency bump: `playwright` 1.64.1 → 1.65.0. Dev: `@biomejs/biome`
+  2.5.15 → 2.6.5, `rimraf` 6.1.3 → 6.1.4, `vitest` 5.0.5 → 5.1.0.
+  No behavior change.
+
 ## [0.4.1] - 2026-10-24
 
 ### Security
@@ -134,7 +152,8 @@ First release.
 - Distributable package: a `bfsg-scanner` bin and a `dist` build that
   excludes tests.
 
-[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/MihaelaAghirculesei/bfsg-scanner/compare/v0.2.2...v0.3.0
