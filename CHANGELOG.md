@@ -6,6 +6,19 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `axe-core` 4.14.0 → 4.14.1. Most fixes remove false positives
+  (`empty-table-header`, `link-in-text-block`, `target-size`,
+  `aria-valid-attr-value`), so finding counts usually go down. Two changes can
+  add findings: `meta-viewport-scale` now reports invalid `user-scalable` and
+  `maximum-scale` values, and `color-contrast` / `target-size` results can move
+  in either direction for `position: absolute` and `fixed` elements. If you
+  gate CI on violations, re-run your scan before raising the version.
+- Dependency bump: `playwright` 1.65.0 → 1.65.1, `fast-xml-parser` 5.12.0 →
+  5.12.1. Dev: `@biomejs/biome` 2.6.5 → 2.6.8, `vitest` 5.1.0 → 5.1.1.
+  No behavior change.
+
 ## [0.4.2] - 2026-11-13
 
 ### Security
